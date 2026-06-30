@@ -6,9 +6,9 @@ use crate::loadable::Loadable;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    pub profile_path: PathBuf,
-    pub extra_dll_locations: Vec<PathBuf>,
-    pub dev_dependencies: HashSet<String>,
+    #[serde(default)] pub profile_path: PathBuf,
+    #[serde(default)] pub extra_dll_locations: Vec<PathBuf>,
+    #[serde(default)] pub dev_dependencies: HashSet<String>,
 }
 
 impl Default for Config {

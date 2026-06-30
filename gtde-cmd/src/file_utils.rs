@@ -1,11 +1,13 @@
-use std::{fs, io::Result, path::Path};
+use std::{fs, path::Path};
+
+use crate::error::Error;
 
 pub fn copy_folder_by_name<'a>(
     source: impl AsRef<Path>,
     destination: impl AsRef<Path>,
     name: &'a str,
     recursive: bool,
-) -> Result<()> {
+) -> Result<(), Error> {
     copy_folder(
         &source.as_ref().join(name),
         &destination.as_ref().join(name),
@@ -23,34 +25,41 @@ pub fn create_file_if_doesnt_exist(
     folder: impl AsRef<Path>,
     file_name: &str,
     default_data: impl AsRef<[u8]>,
-) -> Result<FileStatus> {
+) -> Result<FileStatus, Error> {
     let path = folder.as_ref().join(file_name);
 
     if path.exists() {
         return Ok(FileStatus::FileExisted);
     }
 
-    let _ = fs::create_dir_all(&folder)?;
-    let _ = fs::write(&path, default_data)?;
+    let _ = fs::create_dir_all(&folder)
+        .map_err(Error::io_at(&folder))?;
+    let _ = fs::write(&path, default_data)
+        .map_err(Error::io_at(&folder))?;
 
     Ok(FileStatus::FileCreated)
 }
 
-fn copy_folder<'a>(source: &'a Path, destination: &'a Path, recursive: bool) -> Result<()> {
-    fs::create_dir_all(source)?;
+fn copy_folder<'a>(source: &'a Path, destination: &'a Path, recursive: bool) -> Result<(), Error> {
 
-    for entry in fs::read_dir(source)? {
-        let entry = entry?;
-        let src = entry.path();
-        let dst = destination.join(entry.file_name());
-
-        if src.is_dir() {
-            if recursive {
-                copy_folder(&src, &dst, true)?;
+    if source.is_dir() {
+        for entry in fs::read_dir(source).map_err(Error::io_at(source))? {
+            let entry = entry.map_err(Error::io_at(source))?;
+            let src = entry.path();
+            let dst = destination.join(entry.file_name());
+            fs::create_dir_all(&destination).map_err(Error::io_at(&destination))?;
+    
+            if src.is_dir() {
+                if recursive {
+                    copy_folder(&src, &dst, true)?;
+                }
+            } else {
+                fs::copy(&src, &dst).map_err(Error::io_at(&src))?;
             }
-        } else {
-            fs::copy(&src, &dst)?;
         }
+    } else {
+        fs::create_dir_all(destination.parent().unwrap()).map_err(Error::io_at(&destination))?;
+        fs::copy(&source, &destination).map_err(Error::io_at(&source))?;
     }
 
     Ok(())

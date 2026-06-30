@@ -1,12 +1,16 @@
-use std::{fs, io::Result, path::Path};
+use std::{fs, path::Path};
 
-use crate::{config::Config, file_utils};
+use crate::{config::Config, error::Error, file_utils};
 
-pub fn init<'a>(path: &'a Path) -> Result<()> {
-    fs::create_dir_all(path.join("Assets"))?;
-    fs::create_dir_all(path.join("config"))?;
-    fs::create_dir_all(path.join("plugins"))?;
-    fs::create_dir_all(path.join("Custom"))?;
+pub fn init<'a>(path: &'a Path) -> Result<(), Error> {
+    fs::create_dir_all(path.join("Assets"))
+        .map_err(Error::io_at(path.join("Assets")))?;
+    fs::create_dir_all(path.join("config"))
+        .map_err(Error::io_at(path.join("config")))?;
+    fs::create_dir_all(path.join("plugins"))
+        .map_err(Error::io_at(path.join("plugins")))?;
+    fs::create_dir_all(path.join("Custom"))
+        .map_err(Error::io_at(path.join("Custom")))?;
     file_utils::create_file_if_doesnt_exist(path, "CHANGELOG.md", "")?;
     file_utils::create_file_if_doesnt_exist(path, "README.md", "")?;
     file_utils::create_file_if_doesnt_exist(path, "manifest.json", "")?;

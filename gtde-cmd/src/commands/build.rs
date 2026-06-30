@@ -6,8 +6,8 @@ use crate::{
 };
 
 pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
-    let config = Config::load(env_path).map_err(|_| Error::NoConfig)?;
-    let manifest = Manifest::load(env_path).map_err(|_| Error::NoConfig)?;
+    let config = Config::load(env_path)?;
+    let manifest = Manifest::load(env_path)?;
 
     match version {
         VersionType::Debug => build_debug(env_path, config, manifest)?,
@@ -34,7 +34,8 @@ fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<
     let config = Config::load(&env_path)?;
     for dll_path in config.extra_dll_locations {
         let name = dll_path.components().last().unwrap();
-        fs::copy(&dll_path, destination.join(name))?;
+        fs::copy(&dll_path, destination.join(name))
+            .map_err(Error::io_at(dll_path))?;
     }
 
     Ok(())
@@ -44,13 +45,11 @@ fn build_debug(env_path: &Path, config: Config, manifest: Manifest) -> Result<()
     let destination_bepinex = config.profile_path.join("BepInEx");
     let mod_location = destination_bepinex
         .join("plugins")
-        .join(format!("{}-{}", manifest.author_name, manifest.name));
-    let mod_inner = mod_location.join(&manifest.name);
+        .join(&manifest.name);
 
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "config", true)?;
-    file_utils::copy_folder_by_name(env_path, &mod_inner, "plugins", true)?;
-    file_utils::copy_folder_by_name(env_path, &mod_inner, "Custom", true)?;
+    file_utils::copy_folder_by_name(env_path.join("plugins"), &mod_location, &manifest.name, true)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "manifest.json", false)?;
@@ -59,7 +58,8 @@ fn build_debug(env_path: &Path, config: Config, manifest: Manifest) -> Result<()
     let config = Config::load(&env_path)?;
     for dll_path in config.extra_dll_locations {
         let name = dll_path.components().last().unwrap();
-        fs::copy(&dll_path, mod_location.join(name))?;
+        fs::copy(&dll_path, mod_location.join(name))
+            .map_err(Error::io_at(dll_path))?;
     }
     
     Ok(())

@@ -48,7 +48,7 @@ enum Command {
 
 impl Command {
     pub fn solve_command(self) -> Result<(), Error> {
-        let env_path = env::current_dir()?;
+        let env_path = env::current_dir().expect("Invalid current directory.");
 
         match self {
             Command::Build { release } => {
