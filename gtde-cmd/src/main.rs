@@ -10,6 +10,10 @@ use args::Cli;
 use clap::Parser;
 
 fn main() {
-    #[allow(unused)]
     let cli = Cli::parse();
+
+    if let Err(e) = cli.run() {
+        eprintln!("Error: {e}");
+        std::process::exit(1);
+    }
 }

@@ -1,7 +1,7 @@
 use clap::{Parser, ValueEnum};
 use std::{env, fmt::Display};
 
-use crate::commands::{add_dependency, build, init, new, set_profile_path};
+use crate::{commands::{add_dependency, build, init, new, set_profile_path}, error::Error};
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum VersionType {
@@ -20,6 +20,12 @@ impl Display for VersionType {
 pub struct Cli {
     #[command(subcommand)]
     command: Command,
+}
+
+impl Cli {
+    pub fn run(self) -> Result<(), Error> {
+        self.command.solve_command()
+    }
 }
 
 #[derive(Parser, Debug)]
@@ -41,11 +47,8 @@ enum Command {
 }
 
 impl Command {
-    #[allow(unused)]
-    pub fn solve_command(self) {
-        let Ok(env_path) = env::current_dir() else {
-            return;
-        };
+    pub fn solve_command(self) -> Result<(), Error> {
+        let env_path = env::current_dir()?;
 
         match self {
             Command::Build { release } => {
@@ -54,19 +57,19 @@ impl Command {
                     false => VersionType::Debug,
                 };
 
-                let _ = build::build(version, &env_path);
+                build::build(version, &env_path)
             }
             Command::New { project_name } => {
-                let _ = new::new(project_name, &env_path);
+                new::new(project_name, &env_path).map_err(|e| e.into())
             }
             Command::Init => {
-                let _ = init::init(&env_path);
+                init::init(&env_path).map_err(|e| e.into())
             }
             Command::AddDependency { path } => {
-                let _ = add_dependency::add_dependency(&env_path, path);
+                add_dependency::add_dependency(&env_path, path)
             }
             Command::SetProfilePath { path } => {
-                let _ = set_profile_path::set_profile_path(&env_path, path);
+                set_profile_path::set_profile_path(&env_path, path)
             }
         }
     }
