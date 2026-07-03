@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::loadable::Loadable;
 
