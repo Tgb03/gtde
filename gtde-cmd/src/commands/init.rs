@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use crate::{config::Config, error::Error, file_utils};
+use crate::{config::Config, error::Error, file_utils, manifest::Manifest};
 
 pub fn init<'a>(path: &'a Path) -> Result<(), Error> {
     fs::create_dir_all(path.join("Assets"))
@@ -13,7 +13,9 @@ pub fn init<'a>(path: &'a Path) -> Result<(), Error> {
         .map_err(Error::io_at(path.join("Custom")))?;
     file_utils::create_file_if_doesnt_exist(path, "CHANGELOG.md", "")?;
     file_utils::create_file_if_doesnt_exist(path, "README.md", "")?;
-    file_utils::create_file_if_doesnt_exist(path, "manifest.json", "")?;
+    file_utils::create_file_if_doesnt_exist(path, "manifest.json", 
+        serde_json::to_string_pretty(&Manifest::default()).unwrap_or_default()
+    )?;
 
     let config_data = serde_json::to_string_pretty(&Config::default()).unwrap_or_default();
     file_utils::create_file_if_doesnt_exist(path, "gtde.config", config_data)?;
