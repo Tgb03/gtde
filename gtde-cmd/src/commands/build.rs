@@ -49,7 +49,7 @@ fn build_debug(env_path: &Path, config: Config, manifest: Manifest) -> Result<()
 
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "config", true)?;
-    file_utils::copy_folder_by_name(env_path.join("plugins"), &mod_location, &manifest.name, true)?;
+    file_utils::copy_folder(&env_path.join("plugins"), &mod_location, true)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "manifest.json", false)?;

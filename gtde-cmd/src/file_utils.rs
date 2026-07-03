@@ -40,7 +40,7 @@ pub fn create_file_if_doesnt_exist(
     Ok(FileStatus::FileCreated)
 }
 
-fn copy_folder<'a>(source: &'a Path, destination: &'a Path, recursive: bool) -> Result<(), Error> {
+pub fn copy_folder<'a>(source: &'a Path, destination: &'a Path, recursive: bool) -> Result<(), Error> {
 
     if source.is_dir() {
         for entry in fs::read_dir(source).map_err(Error::io_at(source))? {
