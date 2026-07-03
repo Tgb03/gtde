@@ -18,7 +18,9 @@ pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
 }
 
 fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<(), Error> {
-    let destination = &env_path.join("output");
+    let destination = &env_path
+        .join("output")
+        .join(&manifest.name);
 
     build_debug(env_path, config, manifest)?;
 
