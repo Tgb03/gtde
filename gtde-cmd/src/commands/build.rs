@@ -10,7 +10,7 @@ pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
     let manifest = Manifest::load(env_path)?;
 
     match version {
-        VersionType::Debug => build_debug(env_path, config, manifest)?,
+        VersionType::Debug => build_debug(env_path, config, &manifest)?,
         VersionType::Release => build_release(env_path, config, manifest)?,
     };
 
@@ -22,12 +22,12 @@ fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<
         .join("output")
         .join(&manifest.name);
 
-    build_debug(env_path, config, manifest)?;
+    build_debug(env_path, config, &manifest)?;
 
     file_utils::copy_folder_by_name(env_path, destination, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "config", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "plugins", true)?;
-    file_utils::copy_folder_by_name(env_path, destination, "Custom", true)?;
+    file_utils::copy_folder_by_name(env_path, destination.join("plugins").join(&manifest.name), "Custom", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "manifest.json", false)?;
@@ -43,7 +43,7 @@ fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<
     Ok(())
 }
 
-fn build_debug(env_path: &Path, config: Config, manifest: Manifest) -> Result<(), Error> {
+fn build_debug(env_path: &Path, config: Config, manifest: &Manifest) -> Result<(), Error> {
     let destination_bepinex = config.profile_path.join("BepInEx");
     let mod_location = destination_bepinex
         .join("plugins")
@@ -51,7 +51,8 @@ fn build_debug(env_path: &Path, config: Config, manifest: Manifest) -> Result<()
 
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, &destination_bepinex, "config", true)?;
-    file_utils::copy_folder(&env_path.join("plugins"), &mod_location, true)?;
+    file_utils::copy_folder_by_name(env_path, &mod_location.join(&manifest.name), "Custom", true)?;
+    file_utils::copy_folder(&env_path.join("plugins"), &mod_location.join(&manifest.name), true)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "manifest.json", false)?;
