@@ -1,7 +1,8 @@
 
 [workspace]
 members = [
-    "gtde-cmd",
+    "gtde-app",
+    "gtde-cmd", "gtde-db",
 ]
 resolver = "1"
 

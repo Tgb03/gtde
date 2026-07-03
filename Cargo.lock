@@ -138,6 +138,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "gtde-app"
+version = "0.1.0"
+dependencies = [
+ "gtde-cmd",
+]
+
+[[package]]
 name = "gtde-cmd"
 version = "0.1.0"
 dependencies = [
@@ -148,6 +155,10 @@ dependencies = [
  "tempfile",
  "thiserror",
 ]
+
+[[package]]
+name = "gtde-db"
+version = "0.1.0"
 
 [[package]]
 name = "heck"
