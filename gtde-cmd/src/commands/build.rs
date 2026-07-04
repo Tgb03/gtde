@@ -30,7 +30,7 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
     file_utils::copy_folder_by_name(env_path, destination, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "config", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "plugins", true)?;
-    file_utils::copy_folder_by_name(env_path, destination.join("plugins").join(&manifest.name), "Custom", true)?;
+    file_utils::copy_folder_by_name(env_path, destination.join("plugins"), "Custom", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "icon.png", false)?;
