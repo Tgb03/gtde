@@ -1,4 +1,7 @@
-use std::{fs, path::Path};
+use std::{fs::{self, File}, io::{Read, Write}, path::Path};
+
+use walkdir::WalkDir;
+use zip::{CompressionMethod, ZipWriter, write::FileOptions};
 
 use crate::error::Error;
 
@@ -61,6 +64,48 @@ pub fn copy_folder<'a>(source: &'a Path, destination: &'a Path, recursive: bool)
         fs::create_dir_all(destination.parent().unwrap()).map_err(Error::io_at(&destination))?;
         fs::copy(&source, &destination).map_err(Error::io_at(&source))?;
     }
+
+    Ok(())
+}
+
+pub fn zip_folder(src_dir: &Path, out_dir: &Path) -> std::io::Result<()> {
+    if !src_dir.is_dir() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("{} is not a directory", src_dir.display()),
+        ));
+    }
+
+    // Build output path: same name as folder + ".zip"
+    let zip_path = out_dir;
+
+    let zip_file = File::create(&zip_path)?;
+    let mut zip = ZipWriter::new(zip_file);
+
+    let options: FileOptions<()> = FileOptions::default()
+        .compression_method(CompressionMethod::Deflated)
+        .unix_permissions(0o755);
+
+    let mut buffer = Vec::new();
+
+    for entry in WalkDir::new(src_dir).into_iter().filter_map(|e| e.ok()) {
+        let path = entry.path();
+        // Path inside the zip, relative to src_dir
+        let name = path.strip_prefix(src_dir).unwrap();
+
+        if path.is_file() {
+            zip.start_file(name.to_string_lossy(), options)?;
+            let mut f = File::open(path)?;
+            f.read_to_end(&mut buffer)?;
+            zip.write_all(&buffer)?;
+            buffer.clear();
+        } else if !name.as_os_str().is_empty() {
+            // Add directory entries (needed for empty dirs)
+            zip.add_directory(name.to_string_lossy(), options)?;
+        }
+    }
+
+    zip.finish()?;
 
     Ok(())
 }

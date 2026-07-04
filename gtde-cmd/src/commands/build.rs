@@ -10,19 +10,22 @@ pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
     let manifest = Manifest::load(env_path)?;
 
     match version {
-        VersionType::Debug => build_debug(env_path, config, &manifest)?,
+        VersionType::Debug => build_debug(env_path, &config, &manifest)?,
         VersionType::Release => build_release(env_path, config, manifest)?,
     };
 
     Ok(())
 }
 
-fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<(), Error> {
+fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Result<(), Error> {
     let destination = &env_path
         .join("output")
         .join(&manifest.name);
 
-    build_debug(env_path, config, &manifest)?;
+    build_debug(env_path, &config, &manifest)?;
+
+    manifest.dependencies.retain(|e| !config.dev_dependencies.contains(e));
+    manifest.save(destination)?;
 
     file_utils::copy_folder_by_name(env_path, destination, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "config", true)?;
@@ -30,7 +33,6 @@ fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<
     file_utils::copy_folder_by_name(env_path, destination.join("plugins").join(&manifest.name), "Custom", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "CHANGELOG.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "README.md", false)?;
-    file_utils::copy_folder_by_name(env_path, destination, "manifest.json", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "icon.png", false)?;
 
     let config = Config::load(&env_path)?;
@@ -40,10 +42,13 @@ fn build_release(env_path: &Path, config: Config, manifest: Manifest) -> Result<
             .map_err(Error::io_at(dll_path))?;
     }
 
+    file_utils::zip_folder(destination, &env_path.join("output"))
+        .map_err(Error::io_at(destination))?;
+
     Ok(())
 }
 
-fn build_debug(env_path: &Path, config: Config, manifest: &Manifest) -> Result<(), Error> {
+fn build_debug(env_path: &Path, config: &Config, manifest: &Manifest) -> Result<(), Error> {
     let destination_bepinex = config.profile_path.join("BepInEx");
     let mod_location = destination_bepinex
         .join("plugins")
