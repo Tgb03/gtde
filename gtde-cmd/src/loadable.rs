@@ -7,11 +7,15 @@ use thiserror::Error;
 pub struct LoadableError {
     error_type: LoadableErrorType,
     file_name: &'static str,
+    was_loading: bool,
 }
 
 impl Display for LoadableError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "error loading '{}': {}", self.file_name, self.error_type)
+        write!(f, "error {} '{}': {}", match self.was_loading {
+            true => "loading",
+            false => "saving",
+        }, self.file_name, self.error_type)
     }
 }
 
@@ -32,11 +36,13 @@ pub trait Loadable: Serialize + DeserializeOwned {
         let data = fs::read_to_string(path).map_err(|e| LoadableError {
             error_type: e.into(),
             file_name: Self::get_name(),
+            was_loading: true,
         })?;
 
         serde_json::from_str::<Self>(&data).map_err(|e| LoadableError {
             error_type: e.into(),
             file_name: Self::get_name(),
+            was_loading: true,
         })
     }
 
@@ -44,11 +50,13 @@ pub trait Loadable: Serialize + DeserializeOwned {
         let data = serde_json::to_string_pretty::<Self>(self).map_err(|e| LoadableError {
             error_type: e.into(),
             file_name: Self::get_name(),
+            was_loading: false,
         })?;
 
         fs::write(env_path.join(Self::get_name()), data).map_err(|e| LoadableError {
             error_type: e.into(),
             file_name: Self::get_name(),
+            was_loading: false,
         })?;
 
         Ok(())

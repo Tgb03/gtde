@@ -25,7 +25,9 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
     build_debug(env_path, &config, &manifest)?;
 
     manifest.dependencies.retain(|e| !config.dev_dependencies.contains(e));
-    manifest.save(destination)?;
+    fs::create_dir_all(destination)
+        .map_err(Error::io_at(destination))?;
+    manifest.save(&destination)?;
 
     file_utils::copy_folder_by_name(env_path, destination, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "config", true)?;
