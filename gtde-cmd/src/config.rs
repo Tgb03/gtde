@@ -1,4 +1,4 @@
-use std::{collections::HashSet, path::PathBuf};
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
@@ -8,7 +8,7 @@ use crate::loadable::Loadable;
 pub struct Config {
     #[serde(default)] pub profile_path: PathBuf,
     #[serde(default)] pub extra_dll_locations: Vec<PathBuf>,
-    #[serde(default)] pub dev_dependencies: HashSet<String>,
+    #[serde(default)] pub dev_dependencies: Vec<String>,
 }
 
 impl Default for Config {

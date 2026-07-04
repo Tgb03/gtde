@@ -24,7 +24,10 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
 
     build_debug(env_path, &config, &manifest)?;
 
-    manifest.dependencies.retain(|e| !config.dev_dependencies.contains(e));
+    manifest.dependencies.retain(|dependency| {
+        config.dev_dependencies.iter()
+            .all(|dev_dependency| !dependency.contains(dev_dependency))
+    });
     fs::create_dir_all(destination)
         .map_err(Error::io_at(destination))?;
     manifest.save(&destination)?;
