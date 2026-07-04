@@ -42,7 +42,7 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
             .map_err(Error::io_at(dll_path))?;
     }
 
-    file_utils::zip_folder(destination, &env_path.join("output"))
+    file_utils::zip_folder(destination, &env_path.join("output").join(&manifest.name).with_extension("zip"))
         .map_err(Error::io_at(destination))?;
 
     Ok(())
