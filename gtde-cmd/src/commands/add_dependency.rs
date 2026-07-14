@@ -1,7 +1,8 @@
 use gtde_error::error::Error;
+use gtde_file::loadable::Loadable;
 use std::path::Path;
 
-use crate::{loadable::Loadable, manifest::Manifest};
+use crate::manifest::Manifest;
 
 pub fn add_dependency(env_path: &Path, dependency_path: String) -> Result<(), Error> {
     let mut config = Manifest::load(env_path)?;
@@ -13,7 +14,8 @@ pub fn add_dependency(env_path: &Path, dependency_path: String) -> Result<(), Er
 
 #[cfg(test)]
 mod tests {
-    use crate::{commands::add_dependency::add_dependency, loadable::Loadable, manifest::Manifest};
+    use crate::{commands::add_dependency::add_dependency, manifest::Manifest};
+    use gtde_file::loadable::Loadable;
     use tempfile::{TempDir, tempdir};
 
     fn setup() -> TempDir {

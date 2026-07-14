@@ -1,7 +1,8 @@
 use std::path::Path;
 
-use crate::{config::Config, loadable::Loadable};
+use crate::config::Config;
 use gtde_error::error::Error;
+use gtde_file::loadable::Loadable;
 
 pub fn set_profile_path(env_path: impl AsRef<Path>, path: impl AsRef<Path>) -> Result<(), Error> {
     let mut config = Config::load(env_path.as_ref())?;

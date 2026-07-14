@@ -362,6 +362,7 @@ dependencies = [
  "clap",
  "colored",
  "gtde-error",
+ "gtde-file",
  "serde",
  "serde_json",
  "tempfile",
@@ -374,8 +375,8 @@ dependencies = [
 name = "gtde-db"
 version = "0.1.0"
 dependencies = [
- "gtde-cmd",
  "gtde-error",
+ "gtde-file",
  "serde",
  "serde_json",
  "thiserror",
@@ -387,6 +388,15 @@ version = "0.1.0"
 dependencies = [
  "serde_json",
  "thiserror",
+]
+
+[[package]]
+name = "gtde-file"
+version = "0.1.0"
+dependencies = [
+ "gtde-error",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

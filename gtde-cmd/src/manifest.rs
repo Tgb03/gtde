@@ -1,8 +1,7 @@
 use std::collections::HashSet;
 
+use gtde_file::{loadable::Loadable, named_data::NamedData};
 use serde::{Deserialize, Serialize};
-
-use crate::{loadable::Loadable, named_data::NamedData};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum VersionType {

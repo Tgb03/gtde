@@ -1,10 +1,9 @@
 use colored::Colorize;
 use gtde_error::error::Error;
+use gtde_file::loadable::Loadable;
 use std::{fs, path::Path};
 
-use crate::{
-    args::VersionType, config::Config, file_utils, loadable::Loadable, manifest::Manifest,
-};
+use crate::{args::VersionType, config::Config, file_utils, manifest::Manifest};
 
 pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
     let config = Config::load(env_path)?;
