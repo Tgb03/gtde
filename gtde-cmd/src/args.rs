@@ -1,7 +1,8 @@
 use clap::{Parser, ValueEnum};
 use std::{env, fmt::Display};
 
-use crate::{commands::{add_dependency, build, init, new, set_profile_path}, error::Error};
+use gtde_error::error::Error;
+use crate::{commands::{add_dependency, build, init, new, set_profile_path}};
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum VersionType {

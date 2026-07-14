@@ -1,9 +1,8 @@
 use std::{fs::{self, File}, io::{Read, Write}, path::Path};
 
+use gtde_error::error::Error;
 use walkdir::WalkDir;
 use zip::{CompressionMethod, ZipWriter, write::FileOptions};
-
-use crate::error::Error;
 
 pub fn copy_folder_by_name<'a>(
     source: impl AsRef<Path>,

@@ -1,8 +1,9 @@
 
 [workspace]
 members = [
-    "gtde-app",
-    "gtde-cmd", "gtde-db",
+    "gtde-cmd", 
+    "gtde-db", 
+    "gtde-error",
 ]
 resolver = "1"
 

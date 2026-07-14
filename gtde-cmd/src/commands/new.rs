@@ -1,6 +1,7 @@
 use std::{fs, path::Path};
 
-use crate::{commands::init, error::Error};
+use gtde_error::error::Error;
+use crate::{commands::init};
 
 pub fn new<'a>(name: String, path: &'a Path) -> Result<(), Error> {
     let path = path.join(&name);

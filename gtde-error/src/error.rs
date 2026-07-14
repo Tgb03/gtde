@@ -19,6 +19,8 @@ pub enum Error {
         source: std::io::Error,
     },
     #[error(transparent)]
+    SerdeJsonError(#[from] serde_json::Error),
+    #[error(transparent)]
     LoadingError(#[from] LoadableError),
 }
 

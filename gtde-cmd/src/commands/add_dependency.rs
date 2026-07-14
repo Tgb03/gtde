@@ -1,6 +1,7 @@
 use std::path::Path;
+use gtde_error::error::Error;
 
-use crate::{error::Error, loadable::Loadable, manifest::Manifest};
+use crate::{loadable::Loadable, manifest::Manifest};
 
 pub fn add_dependency(env_path: &Path, dependency_path: String) -> Result<(), Error> {
     let mut config = Manifest::load(env_path)?;

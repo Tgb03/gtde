@@ -1,31 +1,8 @@
-use std::{fmt::Display, fs, io, path::Path};
+use std::{fs, path::Path};
 
+use gtde_error::loadable::LoadableError;
 use serde::{Serialize, de::DeserializeOwned};
-use thiserror::Error;
 
-#[derive(Debug, Error)]
-pub struct LoadableError {
-    error_type: LoadableErrorType,
-    file_name: &'static str,
-    was_loading: bool,
-}
-
-impl Display for LoadableError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "error {} '{}': {}", match self.was_loading {
-            true => "loading",
-            false => "saving",
-        }, self.file_name, self.error_type)
-    }
-}
-
-#[derive(Debug, Error)]
-pub enum LoadableErrorType {
-    #[error(transparent)]
-    IOError(#[from] io::Error),
-    #[error(transparent)]
-    SerdeError(#[from] serde_json::Error),
-}
 
 pub trait Loadable: Serialize + DeserializeOwned {
     fn get_name() -> &'static str;

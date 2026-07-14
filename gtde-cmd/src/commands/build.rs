@@ -1,7 +1,9 @@
 use std::{fs, path::Path};
+use colored::Colorize;
+use gtde_error::error::Error;
 
 use crate::{
-    args::VersionType, config::Config, error::Error, file_utils, loadable::Loadable,
+    args::VersionType, config::Config, file_utils, loadable::Loadable,
     manifest::Manifest,
 };
 
@@ -50,6 +52,7 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
     file_utils::zip_folder(destination, &env_path.join("output").join(&manifest.name).with_extension("zip"))
         .map_err(Error::io_at(destination))?;
 
+    println!("{}", "Release built succesfully".green());
     Ok(())
 }
 
@@ -75,6 +78,7 @@ fn build_debug(env_path: &Path, config: &Config, manifest: &Manifest) -> Result<
             .map_err(Error::io_at(dll_path))?;
     }
     
+    println!("{}", "Debug built succesfully".green());
     Ok(())
 }
 
