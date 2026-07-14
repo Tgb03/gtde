@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use serde::{Deserialize, Serialize};
 
-use crate::loadable::Loadable;
+use crate::{loadable::Loadable, named_data::NamedData};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum VersionType {
@@ -46,8 +46,9 @@ mod version_string {
         }
 
         let parse = |p: &str| {
-            p.parse::<u8>()
-                .map_err(|e| serde::de::Error::custom(format!("invalid version component '{p}': {e}")))
+            p.parse::<u8>().map_err(|e| {
+                serde::de::Error::custom(format!("invalid version component '{p}': {e}"))
+            })
         };
 
         Ok((parse(parts[0])?, parse(parts[1])?, parse(parts[2])?))
@@ -66,11 +67,12 @@ impl Default for Manifest {
     }
 }
 
-impl Loadable for Manifest {
+impl NamedData for Manifest {
     fn get_name() -> &'static str {
         "manifest.json"
     }
 }
+impl Loadable for Manifest {}
 
 impl Manifest {
     pub fn up_version(&mut self, version_number: VersionType) {

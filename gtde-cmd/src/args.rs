@@ -1,8 +1,8 @@
 use clap::{Parser, ValueEnum};
 use std::{env, fmt::Display};
 
+use crate::commands::{add_dependency, build, init, new, set_profile_path};
 use gtde_error::error::Error;
-use crate::{commands::{add_dependency, build, init, new, set_profile_path}};
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum VersionType {
@@ -63,15 +63,9 @@ impl Command {
             Command::New { project_name } => {
                 new::new(project_name, &env_path).map_err(|e| e.into())
             }
-            Command::Init => {
-                init::init(&env_path).map_err(|e| e.into())
-            }
-            Command::AddDependency { path } => {
-                add_dependency::add_dependency(&env_path, path)
-            }
-            Command::SetProfilePath { path } => {
-                set_profile_path::set_profile_path(&env_path, path)
-            }
+            Command::Init => init::init(&env_path).map_err(|e| e.into()),
+            Command::AddDependency { path } => add_dependency::add_dependency(&env_path, path),
+            Command::SetProfilePath { path } => set_profile_path::set_profile_path(&env_path, path),
         }
     }
 }

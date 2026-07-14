@@ -2,13 +2,16 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-use crate::loadable::Loadable;
+use crate::{loadable::Loadable, named_data::NamedData};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    #[serde(default)] pub profile_path: PathBuf,
-    #[serde(default)] pub extra_dll_locations: Vec<PathBuf>,
-    #[serde(default)] pub dev_dependencies: Vec<String>,
+    #[serde(default)]
+    pub profile_path: PathBuf,
+    #[serde(default)]
+    pub extra_dll_locations: Vec<PathBuf>,
+    #[serde(default)]
+    pub dev_dependencies: Vec<String>,
 }
 
 impl Default for Config {
@@ -21,8 +24,9 @@ impl Default for Config {
     }
 }
 
-impl Loadable for Config {
+impl NamedData for Config {
     fn get_name() -> &'static str {
         "gtde.config"
     }
 }
+impl Loadable for Config {}

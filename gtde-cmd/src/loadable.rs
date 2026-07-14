@@ -3,10 +3,9 @@ use std::{fs, path::Path};
 use gtde_error::loadable::LoadableError;
 use serde::{Serialize, de::DeserializeOwned};
 
+use crate::named_data::NamedData;
 
-pub trait Loadable: Serialize + DeserializeOwned {
-    fn get_name() -> &'static str;
-
+pub trait Loadable: NamedData + Serialize + DeserializeOwned {
     fn load<P: AsRef<Path>>(env_path: P) -> Result<Self, LoadableError> {
         let path = env_path.as_ref().join(Self::get_name());
 
