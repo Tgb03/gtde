@@ -5,6 +5,12 @@ use thiserror::Error;
 use crate::loadable::LoadableError;
 
 #[derive(Error, Debug)]
+#[error(
+    "Ran out persistentIDs. This is because you have 2^31 entries in this datablock. What happened?"
+)]
+pub struct ErrorRanOutOfPersistentIDs;
+
+#[derive(Error, Debug)]
 pub enum Error {
     #[error("No configuration file in project directory. Is there even a project here?")]
     NoConfig,
@@ -22,6 +28,8 @@ pub enum Error {
     SerdeJsonError(#[from] serde_json::Error),
     #[error(transparent)]
     LoadingError(#[from] LoadableError),
+    #[error(transparent)]
+    ErrorRanOutOfPersistentIDs(#[from] ErrorRanOutOfPersistentIDs),
 }
 
 impl Error {
