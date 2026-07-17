@@ -6,8 +6,8 @@ use std::{fs, path::Path};
 use crate::{args::VersionType, config::Config, manifest::Manifest};
 
 pub fn build(version: VersionType, env_path: &Path) -> Result<(), Error> {
-    let config = Config::load(env_path)?;
-    let manifest = Manifest::load(env_path)?;
+    let config = Config::load(env_path, "config")?;
+    let manifest = Manifest::load(env_path, "manifest")?;
 
     match version {
         VersionType::Debug => build_debug(env_path, &config, &manifest)?,
@@ -29,7 +29,7 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
             .all(|dev_dependency| !dependency.contains(dev_dependency))
     });
     fs::create_dir_all(destination).map_err(Error::io_at(destination))?;
-    manifest.save(&destination)?;
+    manifest.save(&destination, "manifest")?;
 
     file_utils::copy_folder_by_name(env_path, destination, "Assets", true)?;
     file_utils::copy_folder_by_name(env_path, destination, "config", true)?;
@@ -39,7 +39,7 @@ fn build_release(env_path: &Path, config: Config, mut manifest: Manifest) -> Res
     file_utils::copy_folder_by_name(env_path, destination, "README.md", false)?;
     file_utils::copy_folder_by_name(env_path, destination, "icon.png", false)?;
 
-    let config = Config::load(&env_path)?;
+    let config = Config::load(&env_path, "config")?;
     for dll_path in config.extra_dll_locations {
         let name = dll_path.components().last().unwrap();
         fs::copy(&dll_path, destination.join(name)).map_err(Error::io_at(dll_path))?;
@@ -75,7 +75,7 @@ fn build_debug(env_path: &Path, config: &Config, manifest: &Manifest) -> Result<
     file_utils::copy_folder_by_name(env_path, &mod_location, "manifest.json", false)?;
     file_utils::copy_folder_by_name(env_path, &mod_location, "icon.png", false)?;
 
-    let config = Config::load(&env_path)?;
+    let config = Config::load(&env_path, "config")?;
     for dll_path in config.extra_dll_locations {
         let name = dll_path.components().last().unwrap();
         fs::copy(&dll_path, mod_location.join(name)).map_err(Error::io_at(dll_path))?;

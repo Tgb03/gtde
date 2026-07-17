@@ -1,7 +1,7 @@
 use clap::{Parser, ValueEnum};
 use std::{env, fmt::Display};
 
-use crate::commands::{add_dependency, build, init, new, set_profile_path};
+use crate::commands::{add_dependency, build, create::{self, CreateFiles}, init, new, set_profile_path};
 use gtde_error::error::Error;
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -45,6 +45,9 @@ enum Command {
     SetProfilePath {
         path: String,
     },
+    Create {
+        file_used: CreateFiles,
+    },
 }
 
 impl Command {
@@ -66,6 +69,7 @@ impl Command {
             Command::Init => init::init(&env_path).map_err(|e| e.into()),
             Command::AddDependency { path } => add_dependency::add_dependency(&env_path, path),
             Command::SetProfilePath { path } => set_profile_path::set_profile_path(&env_path, path),
+            Command::Create { file_used } => create::create(&env_path, file_used),
         }
     }
 }

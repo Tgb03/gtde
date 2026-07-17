@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+gtde-db = { path = "../gtde-db" }
 gtde-error = { path = "../gtde-error" }
 gtde-file = { path = "../gtde-file" }
 serde = { workspace = true }

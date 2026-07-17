@@ -3,3 +3,4 @@ pub mod build;
 pub mod init;
 pub mod new;
 pub mod set_profile_path;
+pub mod create;

@@ -349,6 +349,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "colored",
+ "gtde-db",
  "gtde-error",
  "gtde-file",
  "serde",
