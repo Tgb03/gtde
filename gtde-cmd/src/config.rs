@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use gtde_file::{loadable::Loadable, named_data::NamedData};
+use gtde_file::loadable::Loadable;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -23,9 +23,4 @@ impl Default for Config {
     }
 }
 
-impl NamedData for Config {
-    fn get_name() -> &'static str {
-        "gtde.config"
-    }
-}
 impl Loadable for Config {}

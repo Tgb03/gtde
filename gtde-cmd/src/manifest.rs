@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use gtde_file::{loadable::Loadable, named_data::NamedData};
+use gtde_file::loadable::Loadable;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -66,11 +66,6 @@ impl Default for Manifest {
     }
 }
 
-impl NamedData for Manifest {
-    fn get_name() -> &'static str {
-        "manifest.json"
-    }
-}
 impl Loadable for Manifest {}
 
 impl Manifest {
