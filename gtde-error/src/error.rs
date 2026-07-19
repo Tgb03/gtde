@@ -28,6 +28,20 @@ pub enum Error {
     SerdeJsonError(#[from] serde_json::Error),
     #[error(transparent)]
     LoadingError(#[from] LoadableError),
+    #[error("No file found at path: {0}")]
+    FileNotFound(String),
+    #[error("Datablock {0} already exists. Cannot replace automatically.")]
+    DatablockAlreadyExists(String),
+    #[error("String {0} did not match any existing datablock.")]
+    NoMatchingDataBlock(String),
+    #[error("String {0} matched multiple datablocks: \n{1:?}")]
+    AmbiguousDataBlock(String, Vec<String>),
+    #[error("Constructor {0} did not exist. Created a default one in create/ folder.")]
+    ConstructorDidNotExist(String),
+    #[error(
+        "JSON object has an invalid structure. Good luck. This error normally should not happen"
+    )]
+    InvalidJSONObject,
     #[error(transparent)]
     ErrorRanOutOfPersistentIDs(#[from] ErrorRanOutOfPersistentIDs),
 }

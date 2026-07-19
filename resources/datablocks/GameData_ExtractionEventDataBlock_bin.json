@@ -1,0 +1,16 @@
+{
+  "$schema": "./../.schemas/ExtractionEventDataBlock.json",
+  "Headers": [],
+  "Blocks": [
+    {
+      "EventsToTrigger": [
+        "ThickFog",
+        "EnemyWaveSpawn"
+      ],
+      "name": "FogAndWave",
+      "internalEnabled": true,
+      "persistentID": 1
+    }
+  ],
+  "LastPersistentID": 1
+}
