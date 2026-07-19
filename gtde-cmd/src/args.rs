@@ -79,6 +79,9 @@ enum Command {
         db: String,
         /// The persistentID to search for
         id: u64,
+        /// Only show a custom field in each found entry
+        #[arg(short = 'f', long = "custom-field")]
+        custom_field: Option<String>,
     },
 }
 
@@ -103,7 +106,7 @@ impl Command {
             Command::SetProfilePath { path } => set_profile_path::set_profile_path(&env_path, path),
             Command::Create { file_used } => create::create(&env_path, file_used),
             Command::GrabDB { db } => grab_db::grab_db(&env_path, db),
-            Command::SearchDB { db, id } => search_db(&env_path, &db, id),
+            Command::SearchDB { db, id, custom_field } => search_db(&env_path, &db, id, custom_field),
         }
     }
 }
