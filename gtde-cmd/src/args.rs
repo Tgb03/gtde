@@ -39,28 +39,45 @@ impl Cli {
 
 #[derive(Parser, Debug)]
 enum Command {
+    /// Create a new gtde project in a new directory
     New {
+        /// Name of the project to create
         project_name: String,
     },
+    /// Initialize gtde in the current directory
     Init,
+    /// Build the current project
     Build {
+        /// Build release version too, debug is built no matter what.
         #[arg(short = 'r', long = "release")]
         release: bool,
     },
+    /// Add a dependency to the current project
     AddDependency {
+        /// Path to the dependency to add
         path: String,
     },
+    /// Set the path used for the active profile
     SetProfilePath {
+        /// Path to use as the profile path
         path: String,
     },
+    /// Fetch a datablock from the project or embedded resources
     GrabDB {
+        /// Which datablock to grab
         db: DatablockEnum,
     },
+    /// Create a new entry in a datablock based on a create file
     Create {
+        /// Which file type to create
         file_used: CreateFiles,
     },
+    /// Search a datablock for an object by its persistent ID
     SearchDB {
+        /// Name of the datablock to search, e.g. "Archetype"
+        /// The datablock is just the tiny name, ignoring the prefix and suffix.
         db: String,
+        /// The persistentID to search for
         id: u64,
     },
 }
