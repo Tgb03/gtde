@@ -1,7 +1,7 @@
-use std::path::Path;
 use colored::Colorize;
 use gtde_error::error::Error;
 use serde_json::Value::{self};
+use std::path::Path;
 
 use crate::commands::grab_db::PROJECT_DATABLOCKS;
 
@@ -40,7 +40,12 @@ fn resolve_datablock_bytes(
         .ok_or_else(|| Error::NoMatchingDataBlock(datablock_name.to_owned()))
 }
 
-pub fn search_db(env_path: impl AsRef<Path>, datablock_name: &str, id: u64, custom_field: Option<String>) -> Result<(), Error> {
+pub fn search_db(
+    env_path: impl AsRef<Path>,
+    datablock_name: &str,
+    id: u64,
+    custom_field: Option<String>,
+) -> Result<(), Error> {
     let mut number_of_found_objects = 0usize;
 
     let data = resolve_datablock_bytes(&env_path, datablock_name)?;
@@ -66,15 +71,18 @@ pub fn search_db(env_path: impl AsRef<Path>, datablock_name: &str, id: u64, cust
         if id_u32.as_u64().is_some_and(|e| e == id) {
             match &custom_field {
                 Some(custom) => {
-                    let Some(actual_obj) = value.as_object().map(|e| e.get(custom)).flatten() else { continue; };
-                    
+                    let Some(actual_obj) = value.as_object().map(|e| e.get(custom)).flatten()
+                    else {
+                        continue;
+                    };
+
                     println!("{}", serde_json::to_string_pretty(actual_obj)?.green());
                     number_of_found_objects += 1;
-                },
+                }
                 None => {
                     println!("{}", serde_json::to_string_pretty(value)?.green());
                     number_of_found_objects += 1;
-                },
+                }
             }
         }
     }
