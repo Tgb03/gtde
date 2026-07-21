@@ -3,11 +3,8 @@ use std::path::Path;
 
 use gtde_db::{
     create_objects::{
-        create_chained_puzzle::CreateChainedPuzzle, generic_constructor::GenericConstructor,
-        load_constructor::load_constructor, targetted_constructor::TargettedConstructor,
-    },
-    datablocks::block_wrapper::BlockWrapper,
-    generated::survival_wave_settings::SurvivalWaveSettings,
+        create_chained_puzzle::CreateChainedPuzzle, create_text::CreateText, generic_constructor::GenericConstructor, load_constructor::load_constructor, targetted_constructor::TargettedConstructor,
+    }, datablocks::block_wrapper::BlockWrapper, generated::survival_wave_settings::SurvivalWaveSettings,
 };
 use gtde_error::error::Error;
 
@@ -15,6 +12,7 @@ use gtde_error::error::Error;
 pub enum CreateFiles {
     ChainedPuzzle,
     SurvivalWaveSettings,
+    Text,
 }
 
 pub fn create(path: impl AsRef<Path>, file_used: CreateFiles) -> Result<(), Error> {
@@ -30,6 +28,10 @@ pub fn create(path: impl AsRef<Path>, file_used: CreateFiles) -> Result<(), Erro
             )?
             .construct(&path, "SurvivalWaveSettings")?;
         }
+        CreateFiles::Text => {
+            load_constructor::<CreateText>(&path, "create_text.json")?
+                .construct(&path, "Text")?;
+        },
     };
 
     Ok(())

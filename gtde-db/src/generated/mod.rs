@@ -8,6 +8,7 @@ pub mod enemy;
 pub mod enums;
 pub mod survival_wave_population;
 pub mod survival_wave_settings;
+pub mod text;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(untagged)]
