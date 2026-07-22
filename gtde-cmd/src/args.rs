@@ -76,9 +76,9 @@ enum Command {
     SearchDB {
         /// Name of the datablock to search, e.g. "Archetype"
         /// The datablock is just the tiny name, ignoring the prefix and suffix.
-        db: String,
+        db: DatablockEnum,
         /// The persistentID to search for
-        id: u64,
+        id: u32,
         /// Only show a custom field in each found entry
         #[arg(short = 'f', long = "custom-field")]
         custom_field: Option<String>,
@@ -110,7 +110,7 @@ impl Command {
                 db,
                 id,
                 custom_field,
-            } => search_db(&env_path, &db, id, custom_field),
+            } => search_db(&env_path, db, id, custom_field),
         }
     }
 }

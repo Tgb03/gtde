@@ -1,89 +1,51 @@
 use colored::Colorize;
+use gtde_db::datablocks::datablock_wrapper::DatablockWrapper;
 use gtde_error::error::Error;
-use serde_json::Value::{self};
 use std::path::Path;
 
 use crate::commands::grab_db::PROJECT_DATABLOCKS;
+use crate::commands::init::DatablockEnum;
 
-fn resolve_datablock_bytes(
+fn resolve_datablock_bytes<'a>(
     env_path: impl AsRef<Path>,
-    datablock_name: &str,
+    datablock: DatablockEnum,
 ) -> Result<Vec<u8>, Error> {
     let plugins_dir = env_path.as_ref().join("plugins");
-    let target_name = format!("GameData_{}DataBlock_bin.json", datablock_name).to_lowercase();
-
-    // 1. Look on disk first
-    let disk_match = std::fs::read_dir(&plugins_dir)
-        .map_err(Error::io_at(&plugins_dir))?
-        .filter_map(|entry| entry.ok())
-        .map(|entry| entry.path())
-        .find(|path| {
-            path.file_name()
-                .and_then(|n| n.to_str())
-                .is_some_and(|name| name.to_lowercase() == target_name)
-        });
-
-    if let Some(path) = disk_match {
-        return std::fs::read(&path).map_err(Error::io_at(&path));
-    }
-
-    // 2. Fall back to embedded resources
-    PROJECT_DATABLOCKS
-        .files()
-        .find(|f| {
-            f.path()
-                .file_name()
-                .and_then(|n| n.to_str())
-                .is_some_and(|name| name.to_lowercase() == target_name)
+    let target_name = datablock.to_string();
+    
+    let disk_match = std::fs::read(&plugins_dir.join(&target_name))
+        .ok()
+        .or_else(|| {
+            PROJECT_DATABLOCKS.get_file(&target_name)
+                .map(|e| e.contents().to_owned())
         })
-        .map(|f| f.contents().to_vec())
-        .ok_or_else(|| Error::NoMatchingDataBlock(datablock_name.to_owned()))
+        .unwrap();
+
+    Ok(disk_match)
 }
 
 pub fn search_db(
     env_path: impl AsRef<Path>,
-    datablock_name: &str,
-    id: u64,
+    datablock: DatablockEnum,
+    id: u32,
     custom_field: Option<String>,
 ) -> Result<(), Error> {
     let mut number_of_found_objects = 0usize;
 
-    let data = resolve_datablock_bytes(&env_path, datablock_name)?;
-    let json_value = serde_json::from_slice(&data)?;
-    let Value::Object(json_object) = json_value else {
-        return Err(Error::InvalidJSONObject);
-    };
-    let Some(Value::Array(json_array)) = json_object.get("Blocks") else {
-        return Err(Error::InvalidJSONObject);
-    };
+    let data = resolve_datablock_bytes(&env_path, datablock)?;
+    let json_value: DatablockWrapper<serde_json::Map<String, serde_json::Value>> = serde_json::from_slice(&data)?;
 
-    for value in json_array {
-        let Value::Object(object) = value else {
-            continue;
-        };
-        let Some(id_val) = object.get("persistentID") else {
-            continue;
-        };
-        let Value::Number(id_u32) = id_val else {
-            continue;
-        };
-
-        if id_u32.as_u64().is_some_and(|e| e == id) {
-            match &custom_field {
-                Some(custom) => {
-                    let Some(actual_obj) = value.as_object().map(|e| e.get(custom)).flatten()
-                    else {
-                        continue;
-                    };
-
-                    println!("{}", serde_json::to_string_pretty(actual_obj)?.green());
-                    number_of_found_objects += 1;
-                }
-                None => {
-                    println!("{}", serde_json::to_string_pretty(value)?.green());
-                    number_of_found_objects += 1;
-                }
+    for value in json_value.as_ref() {
+        if value.persistent_id == id {
+            if let Some(custom) = custom_field.as_ref() {
+                println!("{}", serde_json::to_string_pretty(&value.data.get(custom))?.green());
+                number_of_found_objects += 1;
+                
+                continue;
             }
+            
+            println!("{}", serde_json::to_string_pretty(&value.data)?.green());
+            number_of_found_objects += 1;
         }
     }
 
