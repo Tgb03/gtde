@@ -1,12 +1,31 @@
 use std::{
-    fs::{self, File},
-    io::{Read, Write},
-    path::Path,
+    fs::{self, File}, io::{Read, Write}, path::Path, time::SystemTime,
 };
 
 use gtde_error::error::Error;
 use walkdir::WalkDir;
 use zip::{CompressionMethod, ZipWriter, write::FileOptions};
+
+pub fn copy_if_changed(src: &Path, dst: &Path) -> Result<bool, Error> {
+    if let Some(parent) = dst.parent() {
+        fs::create_dir_all(parent).map_err(Error::io_at(parent))?;
+    }
+
+    if let Ok(dst_meta) = fs::metadata(dst) {
+        let src_meta = fs::metadata(src).map_err(Error::io_at(src))?;
+
+        let src_mtime = src_meta.modified().unwrap_or(SystemTime::UNIX_EPOCH);
+        let dst_mtime = dst_meta.modified().unwrap_or(SystemTime::UNIX_EPOCH);
+
+        // Same size and dst is not older than src -> skip
+        if dst_meta.len() == src_meta.len() && dst_mtime >= src_mtime {
+            return Ok(false);
+        }
+    }
+
+    copy_if_changed(src, dst)?;
+    Ok(true)
+}
 
 pub fn copy_folder_by_name<'a>(
     source: impl AsRef<Path>,
@@ -61,12 +80,12 @@ pub fn copy_folder<'a>(
                     copy_folder(&src, &dst, true)?;
                 }
             } else {
-                fs::copy(&src, &dst).map_err(Error::io_at(&src))?;
+                copy_if_changed(&src, &dst)?;
             }
         }
     } else {
         fs::create_dir_all(destination.parent().unwrap()).map_err(Error::io_at(&destination))?;
-        fs::copy(&source, &destination).map_err(Error::io_at(&source))?;
+        copy_if_changed(&source, &destination)?;
     }
 
     Ok(())
