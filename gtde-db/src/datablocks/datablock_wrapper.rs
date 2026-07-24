@@ -165,7 +165,10 @@ impl<T: Serialize + DeserializeOwned + PartialEq> DatablockWrapper<T> {
     ) -> Result<Reference<T>, Error> {
         let mut datablock = Self::load_datablock(&env_path, datablock_name)?;
         let result = datablock.check_add(data, data_name)?;
-        datablock.save_datablock(&env_path, schema_name, datablock_name)?;
+
+        if result.was_added == true {
+            datablock.save_datablock(&env_path, schema_name, datablock_name)?;
+        }
 
         Ok(result.reference)
     }
