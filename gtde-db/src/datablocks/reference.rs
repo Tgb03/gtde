@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Visitor};
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct Reference<T> {
     data: u32,
     phantom: PhantomData<T>,

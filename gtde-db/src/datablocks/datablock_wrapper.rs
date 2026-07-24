@@ -3,9 +3,23 @@ use gtde_error::error::{Error, ErrorRanOutOfPersistentIDs};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::{
-    ops::{Deref, DerefMut},
-    path::Path,
+    ops::{Deref, DerefMut}, path::Path,
 };
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AddResult<T> {
+    pub was_added: bool,
+    pub reference: Reference<T>,
+}
+
+impl<T> AddResult<T> {
+    pub fn new(reference: Reference<T>, was_added: bool) -> Self {
+        Self {
+            was_added,
+            reference,
+        }
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DatablockWrapper<T> {
@@ -58,9 +72,9 @@ impl<T: PartialEq> DatablockWrapper<T> {
         &mut self,
         data: T,
         name: &str,
-    ) -> Result<Reference<T>, ErrorRanOutOfPersistentIDs> {
+    ) -> Result<AddResult<T>, ErrorRanOutOfPersistentIDs> {
         if let Some(id) = self.check_exists(&data) {
-            return Ok(id);
+            return Ok(AddResult::new(id, false));
         }
 
         if self.last_persistent_id == u32::MAX {
@@ -73,7 +87,8 @@ impl<T: PartialEq> DatablockWrapper<T> {
             name.to_owned(),
             self.last_persistent_id,
         ));
-        Ok(self.last_persistent_id.into())
+        
+        Ok(AddResult::new(self.last_persistent_id.into(), true))
     }
 
     fn check_exists(&self, data: &T) -> Option<Reference<T>> {
@@ -87,7 +102,7 @@ impl<T: PartialEq> DatablockWrapper<T> {
         &mut self,
         data: T,
         name: &str,
-    ) -> Result<Reference<T>, ErrorRanOutOfPersistentIDs> {
+    ) -> Result<AddResult<T>, ErrorRanOutOfPersistentIDs> {
         let first_empty_id = self
             .blocks
             .iter()
@@ -101,7 +116,8 @@ impl<T: PartialEq> DatablockWrapper<T> {
             first_empty_id,
             BlockWrapper::new(data, name.to_owned(), first_empty_id as u32),
         );
-        Ok((first_empty_id as u32).into())
+
+        Ok(AddResult::new((first_empty_id as u32).into(), true))
     }
 }
 
@@ -148,9 +164,9 @@ impl<T: Serialize + DeserializeOwned + PartialEq> DatablockWrapper<T> {
         data: T,
     ) -> Result<Reference<T>, Error> {
         let mut datablock = Self::load_datablock(&env_path, datablock_name)?;
-        let reference = datablock.check_add(data, data_name)?;
+        let result = datablock.check_add(data, data_name)?;
         datablock.save_datablock(&env_path, schema_name, datablock_name)?;
 
-        Ok(reference)
+        Ok(result.reference)
     }
 }
