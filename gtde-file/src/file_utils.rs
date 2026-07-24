@@ -23,7 +23,7 @@ pub fn copy_if_changed(src: &Path, dst: &Path) -> Result<bool, Error> {
         }
     }
 
-    copy_if_changed(src, dst)?;
+    fs::copy(src, dst).map_err(Error::io_at(src))?;
     Ok(true)
 }
 
