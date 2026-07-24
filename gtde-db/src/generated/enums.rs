@@ -11,7 +11,8 @@ pub enum EEnemyType {
     Weakling,
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize, Default, JsonSchema)]
+#[repr(u32)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, JsonSchema)]
 pub enum EEnemyName {
     ShooterWave = 11,
     #[default]
@@ -53,4 +54,10 @@ pub enum EEnemyName {
     SquidBossVS = 61,
     StrikerBigNightmare = 62,
     StrikerChildNightmare = 63,
+}
+
+impl Into<u32> for EEnemyName {
+    fn into(self) -> u32 {
+        self as u32
+    }
 }

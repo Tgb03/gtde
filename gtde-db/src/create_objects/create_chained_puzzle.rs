@@ -114,21 +114,14 @@ impl Default for CreateChainedPuzzle {
     }
 }
 
-fn convert_enemy(wrapper: &EnumWrapper<EEnemyName>) -> u32 {
-    match wrapper {
-        EnumWrapper::Data(d) => *d as u32,
-        EnumWrapper::Int(i) => *i as u32,
-    }
-}
-
 impl GenericConstructor for CreateChainedPuzzle {
     fn construct_all(self, env_path: impl AsRef<std::path::Path>) -> Result<(), Error> {
         let survival_population = SurvivalWavePopulation {
-            wave_role_weakling: convert_enemy(&self.survival_wave_population[0]).into(),
-            wave_role_standard: convert_enemy(&self.survival_wave_population[1]).into(),
-            wave_role_special: convert_enemy(&self.survival_wave_population[2]).into(),
-            wave_role_mini_boss: convert_enemy(&self.survival_wave_population[3]).into(),
-            wave_role_boss: convert_enemy(&self.survival_wave_population[4]).into(),
+            wave_role_weakling: self.survival_wave_population[0].clone().into(),
+            wave_role_standard: self.survival_wave_population[1].clone().into(),
+            wave_role_special: self.survival_wave_population[2].clone().into(),
+            wave_role_mini_boss: self.survival_wave_population[3].clone().into(),
+            wave_role_boss: self.survival_wave_population[4].clone().into(),
         };
 
         let wave_population = survival_population.construct(

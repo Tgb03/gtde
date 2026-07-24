@@ -3,6 +3,8 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+use crate::datablocks::reference::Reference;
+
 pub mod chained_puzzle;
 pub mod enemy;
 pub mod enums;
@@ -14,7 +16,7 @@ pub mod text;
 #[serde(untagged)]
 pub enum EnumWrapper<T> {
     Data(T),
-    Int(i32),
+    Int(u32),
 }
 
 impl<T: Default> Default for EnumWrapper<T> {
@@ -26,5 +28,21 @@ impl<T: Default> Default for EnumWrapper<T> {
 impl<T> From<T> for EnumWrapper<T> {
     fn from(value: T) -> Self {
         EnumWrapper::Data(value)
+    }
+}
+
+impl<T: Into<u32>> Into<u32> for EnumWrapper<T> {
+    fn into(self) -> u32 {
+        match self {
+            EnumWrapper::Data(data) => data.into(),
+            EnumWrapper::Int(val) => val,
+        }
+    }
+}
+
+impl<T: Into<u32>, D> Into<Reference<D>> for EnumWrapper<T> {
+    fn into(self) -> Reference<D> {
+        let id: u32 = self.into();
+        id.into()
     }
 }
