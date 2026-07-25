@@ -1,5 +1,8 @@
 use std::{
-    fs::{self, File}, io::{Read, Write}, path::Path, time::SystemTime,
+    fs::{self, File},
+    io::{Read, Write},
+    path::Path,
+    time::SystemTime,
 };
 
 use gtde_error::error::Error;

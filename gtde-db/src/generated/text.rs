@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-
-
 #[derive(Clone, PartialEq, Serialize, Default, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Text {
@@ -26,7 +24,6 @@ pub struct Text {
     pub skip_localization: bool,
     pub spanish: LanguageData,
 }
-
 
 #[derive(Clone, PartialEq, Serialize, Default, Deserialize)]
 #[serde(rename_all = "PascalCase")]

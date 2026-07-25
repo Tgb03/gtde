@@ -1,7 +1,12 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::{create_objects::targetted_constructor::TargettedConstructor, datablocks::{block_wrapper::BlockWrapper, reference::Reference}, generated::text::{LanguageData, Text}};
+use crate::create_objects::targetted_constructor::TargettedConstructor;
+use crate::{
+    create_objects::targetted_constructor::TargettedConstructorWithoutName,
+    datablocks::reference::Reference,
+    generated::text::{LanguageData, Text},
+};
 
 #[derive(Clone, Serialize, Deserialize, JsonSchema)]
 enum CharacterMetaDataTextInner {
@@ -9,7 +14,7 @@ enum CharacterMetaDataTextInner {
     Warden,
     Code,
     Human,
-    Terminal
+    Terminal,
 }
 
 #[derive(Clone, Serialize, Deserialize, JsonSchema)]
@@ -39,8 +44,8 @@ pub struct CreateText {
 }
 
 fn into_localized_text(text: Option<String>) -> LanguageData {
-    LanguageData { 
-        should_translate: text.as_ref().is_some(), 
+    LanguageData {
+        should_translate: text.as_ref().is_some(),
         translation: text.unwrap_or_default(),
     }
 }
@@ -103,8 +108,7 @@ impl TargettedConstructor for CreateText {
         datablock_name: &'static str,
     ) -> Result<Reference<Self::Data>, gtde_error::error::Error> {
         let actual_object: Text = self.clone().into();
-        let block = BlockWrapper::new(actual_object, self.block_name, 0);
-        let reference = block.construct(env_path, datablock_name)?;
+        let reference = actual_object.construct(env_path, self.block_name, datablock_name)?;
 
         Ok(reference)
     }

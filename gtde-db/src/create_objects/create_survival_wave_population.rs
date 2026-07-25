@@ -1,7 +1,11 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::{create_objects::targetted_constructor::TargettedConstructor, datablocks::{block_wrapper::BlockWrapper, reference::Reference}, generated::{EnumWrapper, enums::EEnemyName, survival_wave_population::SurvivalWavePopulation}};
+use crate::{
+    create_objects::targetted_constructor::TargettedConstructor,
+    datablocks::{block_wrapper::BlockWrapper, reference::Reference},
+    generated::{EnumWrapper, enums::EEnemyName, survival_wave_population::SurvivalWavePopulation},
+};
 
 #[derive(Debug, Default, Serialize, Deserialize, JsonSchema)]
 pub struct CreateSurvivalWavePopulation {
@@ -24,11 +28,11 @@ impl TargettedConstructor for CreateSurvivalWavePopulation {
                 wave_role_special: self.enemies[2].clone().into(),
                 wave_role_mini_boss: self.enemies[3].clone().into(),
                 wave_role_boss: self.enemies[4].clone().into(),
-            }, 
-            self.name, 
-            0
+            },
+            self.name,
+            0,
         );
-        
+
         block.construct(env_path, datablock_name)
     }
-} 
+}

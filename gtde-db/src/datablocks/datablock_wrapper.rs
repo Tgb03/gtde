@@ -3,7 +3,8 @@ use gtde_error::error::{Error, ErrorRanOutOfPersistentIDs};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::{
-    ops::{Deref, DerefMut}, path::Path,
+    ops::{Deref, DerefMut},
+    path::Path,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -87,7 +88,7 @@ impl<T: PartialEq> DatablockWrapper<T> {
             name.to_owned(),
             self.last_persistent_id,
         ));
-        
+
         Ok(AddResult::new(self.last_persistent_id.into(), true))
     }
 
