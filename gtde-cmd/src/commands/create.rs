@@ -30,11 +30,11 @@ pub fn create(path: impl AsRef<Path>, file_used: CreateFiles) -> Result<(), Erro
             .construct(&path, "SurvivalWaveSettings")?;
         }
         CreateFiles::Text => {
-            load_constructor::<CreateText>(&path, "create_text.json")?
+            load_constructor::<CreateText>(&path, "text.json")?
                 .construct(&path, "Text")?;
         },
         CreateFiles::SurvivalWavePopulation => {
-            load_constructor::<CreateSurvivalWavePopulation>(&path, "create_survival_wave_population.json")?
+            load_constructor::<CreateSurvivalWavePopulation>(&path, "survival_wave_population.json")?
                 .construct(&path, "SurvivalWavePopulation")?;
         },
     };
