@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::path::Path;
 
 use gtde_error::error::Error;
@@ -29,11 +30,18 @@ fn create_if_not_existing<T: Serialize + JsonSchema>(
 
         println!(
             "Created {}. You can now edit this and use the same command to inject the data into the datablocks",
-            file_name
+            file_name.green()
         );
     }
 
     Ok(status)
+}
+
+pub fn create_constructor<C: Default + JsonSchema + Serialize>(
+    env_path: impl AsRef<Path>,
+    name: &str,
+) -> Result<FileStatus, Error> {
+    create_if_not_existing(&env_path, name, C::default())
 }
 
 pub fn load_constructor<C: Default + JsonSchema + Serialize + DeserializeOwned>(
@@ -42,7 +50,7 @@ pub fn load_constructor<C: Default + JsonSchema + Serialize + DeserializeOwned>(
 ) -> Result<C, Error> {
     let create_folder = env_path.as_ref().join("gtde-create");
 
-    if FileStatus::FileCreated == create_if_not_existing(&env_path, name, C::default())? {
+    if FileStatus::FileCreated == create_constructor::<C>(&env_path, name)? {
         return Err(Error::ConstructorDidNotExist(name.to_owned()));
     }
 

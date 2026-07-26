@@ -369,6 +369,7 @@ dependencies = [
 name = "gtde-db"
 version = "0.1.0"
 dependencies = [
+ "colored",
  "gtde-error",
  "gtde-file",
  "schemars",

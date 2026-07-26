@@ -4,8 +4,10 @@ use std::path::Path;
 use gtde_db::{
     create_objects::{
         create_chained_puzzle::CreateChainedPuzzle,
-        create_survival_wave_population::CreateSurvivalWavePopulation, create_text::CreateText,
-        generic_constructor::GenericConstructor, load_constructor::load_constructor,
+        create_survival_wave_population::CreateSurvivalWavePopulation,
+        create_text::CreateText,
+        generic_constructor::GenericConstructor,
+        load_constructor::{create_constructor, load_constructor},
         targetted_constructor::TargettedConstructor,
     },
     datablocks::block_wrapper::BlockWrapper,
@@ -21,7 +23,26 @@ pub enum CreateFiles {
     Text,
 }
 
-pub fn create(path: impl AsRef<Path>, file_used: CreateFiles) -> Result<(), Error> {
+pub fn create(path: impl AsRef<Path>, file_used: CreateFiles, reset: bool) -> Result<(), Error> {
+    if reset {
+        match file_used {
+            CreateFiles::ChainedPuzzle => {
+                create_constructor::<CreateChainedPuzzle>(&path, "chained_puzzle.json")?
+            }
+            CreateFiles::SurvivalWaveSettings => {
+                create_constructor::<SurvivalWaveSettings>(&path, "survival_wave_settings.json")?
+            }
+            CreateFiles::SurvivalWavePopulation => create_constructor::<
+                CreateSurvivalWavePopulation,
+            >(
+                &path, "survival_wave_population.json"
+            )?,
+            CreateFiles::Text => create_constructor::<CreateText>(&path, "text.json")?,
+        };
+
+        return Ok(());
+    }
+
     match file_used {
         CreateFiles::ChainedPuzzle => {
             load_constructor::<CreateChainedPuzzle>(&path, "chained_puzzle.json")?

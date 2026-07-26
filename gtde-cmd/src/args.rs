@@ -71,6 +71,8 @@ enum Command {
     Create {
         /// Which file type to create
         file_used: CreateFiles,
+        #[arg(short = 'r', long = "recreate")]
+        recreate: bool,
     },
     /// Search a datablock for an object by its persistent ID
     SearchDB {
@@ -104,7 +106,10 @@ impl Command {
             Command::Init => init::init(&env_path).map_err(|e| e.into()),
             Command::AddDependency { path } => add_dependency::add_dependency(&env_path, path),
             Command::SetProfilePath { path } => set_profile_path::set_profile_path(&env_path, path),
-            Command::Create { file_used } => create::create(&env_path, file_used),
+            Command::Create {
+                file_used,
+                recreate,
+            } => create::create(&env_path, file_used, recreate),
             Command::GrabDB { db } => grab_db::grab_db(&env_path, db),
             Command::SearchDB {
                 db,
