@@ -44,6 +44,10 @@ pub enum Error {
     InvalidJSONObject,
     #[error(transparent)]
     ErrorRanOutOfPersistentIDs(#[from] ErrorRanOutOfPersistentIDs),
+    #[error(transparent)]
+    StdIOError(#[from] std::io::Error),
+    #[error("Failed to choose a constructor properly. Stopped early.")]
+    ConstructorNotChosen,
 }
 
 impl Error {

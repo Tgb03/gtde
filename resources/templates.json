@@ -1,0 +1,9 @@
+{
+  "CreateChainedPuzzle": [
+    {
+      "name": "default",
+      "description": "default chained puzzle, everything is 0",
+      "data": {}
+    }
+  ]
+}
