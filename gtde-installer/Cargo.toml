@@ -1,0 +1,11 @@
+[package]
+name = "gtde-installer"
+version = "0.1.0"
+edition = "2024"
+
+[target.'cfg(windows)'.dependencies]
+directories = "6.0.0"
+windows-registry = "0.5.3"
+
+[dependencies]
+gtde-cmd = { path = "../gtde-cmd" }

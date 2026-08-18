@@ -3,7 +3,7 @@
 members = [
     "gtde-cmd", 
     "gtde-db", 
-    "gtde-error", "gtde-file",
+    "gtde-error", "gtde-file", "gtde-installer",
 ]
 resolver = "1"
 
