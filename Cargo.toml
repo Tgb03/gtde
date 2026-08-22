@@ -3,9 +3,12 @@
 members = [
     "gtde-cmd", 
     "gtde-db", 
-    "gtde-error", "gtde-file", "gtde-installer",
+    "gtde-error", 
+    "gtde-file", 
+    "gtde-installer",
 ]
 resolver = "1"
 
 [workspace.dependencies]
 serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.150", features = ["preserve_order"] }
