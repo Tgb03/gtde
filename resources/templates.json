@@ -1,9 +1,132 @@
 {
-  "CreateChainedPuzzle": [
+  "ChainedPuzzle": [
     {
-      "name": "default",
+      "name": "simple",
       "description": "default chained puzzle, everything is 0",
-      "data": {}
+      "data": {
+        "chained_puzzle_data": {
+          "PublicAlarmName": "Class II Alarm",
+          "TriggerAlarmOnActivate": true,
+          "SurvivalWaveAreaDistance": 2,
+          "DisableSurvivalWaveOnComplete": true,
+          "UseRandomPositions": true,
+          "WantedDistanceFromStartPos": 0.0,
+          "WantedDistanceBetweenPuzzleComponents": 10.0,
+          "ChainedPuzzle": [
+            {
+              "PuzzleType": 6
+            },
+            {
+              "PuzzleType": 4
+            }
+          ],
+          "OnlyShowHUDWhenPlayerIsClose": false,
+          "AlarmSoundStart": 3339129407,
+          "AlarmSoundStop": 42633153
+        },
+        "survival_wave_population": [
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave"
+        ],
+        "survival_wave_settings": {
+          "m_pauseBeforeStart": 3.0,
+          "m_pauseBetweenGroups": 5.0,
+          "m_wavePauseMin_atCost": 3.0,
+          "m_wavePauseMax_atCost": 10.0,
+          "m_wavePauseMin": 3.0,
+          "m_wavePauseMax": 30.0,
+          "m_populationFilter": [
+            "Weakling"
+          ],
+          "m_filterType": "Exclude",
+          "m_chanceToRandomizeSpawnDirectionPerWave": 1.0,
+          "m_chanceToRandomizeSpawnDirectionPerGroup": 0.1,
+          "m_overrideWaveSpawnType": false,
+          "m_survivalWaveSpawnType": "InRelationToClosestAlivePlayer",
+          "m_populationPointsTotal": -1.0,
+          "m_populationPointsPerWaveStart": 17.0,
+          "m_populationPointsPerWaveEnd": 25.0,
+          "m_populationPointsMinPerGroup": 5.0,
+          "m_populationPointsPerGroupStart": 5.0,
+          "m_populationPointsPerGroupEnd": 10.0,
+          "m_populationRampOverTime": 200.0
+        },
+        "name": "default"
+      }
+    }
+  ],
+  "SurvivalWaveSettings": [
+    {
+      "name": "simple",
+      "description": "default survival wave settings, r1a1 first alarm",
+      "data": {
+        "m_pauseBeforeStart": 3.0,
+        "m_pauseBetweenGroups": 5.0,
+        "m_wavePauseMin_atCost": 3.0,
+        "m_wavePauseMax_atCost": 10.0,
+        "m_wavePauseMin": 3.0,
+        "m_wavePauseMax": 30.0,
+        "m_populationFilter": [
+          "Weakling"
+        ],
+        "m_filterType": "Exclude",
+        "m_chanceToRandomizeSpawnDirectionPerWave": 1.0,
+        "m_chanceToRandomizeSpawnDirectionPerGroup": 0.1,
+        "m_overrideWaveSpawnType": false,
+        "m_survivalWaveSpawnType": "InRelationToClosestAlivePlayer",
+        "m_populationPointsTotal": -1.0,
+        "m_populationPointsPerWaveStart": 17.0,
+        "m_populationPointsPerWaveEnd": 25.0,
+        "m_populationPointsMinPerGroup": 5.0,
+        "m_populationPointsPerGroupStart": 5.0,
+        "m_populationPointsPerGroupEnd": 10.0,
+        "m_populationRampOverTime": 200.0
+      }
+    }
+  ],
+  "Text": [
+    {
+      "name": "empty",
+      "description": "empty text, all fields blank",
+      "data": {
+        "character_meta_data": "Generic",
+        "skip_localization": false,
+        "import_version": 1,
+        "export_version": 1,
+        "description": "empty",
+        "english": "",
+        "chinese_simplified": "",
+        "chinese_traditional": "",
+        "french": "",
+        "german": "",
+        "italian": "",
+        "japanese": "",
+        "korean": "",
+        "polish": "",
+        "portuguese_brazil": "",
+        "russian": "",
+        "spanish": "",
+        "block_name": "empty"
+      }
+    }
+  ],
+  "SurvivalWavePopulation": [
+    {
+      "name": "all_strikers",
+      "description": "only strikers, all of the items",
+      "data": {
+        "name": "all_strikers",
+        "enemies": [
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave",
+          "StrikerWave"
+        ]
+      }
     }
   ]
 }
