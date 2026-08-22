@@ -62,7 +62,7 @@ fn get_templates(
 
     println!(
         "{}",
-        "Failed to match your given name to an existing template, defaulting to default".red()
+        "Failed to match your given name to an existing template, ignoring request".red()
     );
     Ok(None)
 }
