@@ -115,6 +115,7 @@ pub fn init<'a>(path: &'a Path) -> Result<(), Error> {
     fs::create_dir_all(path.join("plugins")).map_err(Error::io_at(path.join("plugins")))?;
     fs::create_dir_all(path.join("Custom")).map_err(Error::io_at(path.join("Custom")))?;
     fs::create_dir_all(path.join("gtde-create")).map_err(Error::io_at(path.join("gtde-create")))?;
+    fs::create_dir_all(path.join(".schemas")).map_err(Error::io_at(path.join(".schemas")))?;
     file_utils::create_file_if_doesnt_exist(path, "CHANGELOG.md", "")?;
     file_utils::create_file_if_doesnt_exist(path, "README.md", "")?;
     file_utils::create_file_if_doesnt_exist(
