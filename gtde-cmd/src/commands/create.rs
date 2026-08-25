@@ -7,13 +7,13 @@ use textwrap::wrap;
 use gtde_db::{
     create_objects::{
         create_chained_puzzle::CreateChainedPuzzle,
-        create_survival_wave_population::CreateSurvivalWavePopulation,
+        create_survival_wave_population::SurvivalWavePopulationIntermediary,
         create_text::CreateText,
         generic_constructor::GenericConstructor,
         load_constructor::{create_constructor, create_schema, load_constructor},
+        named_contructor::NamedContructorWrapper,
         targetted_constructor::TargettedConstructor,
     },
-    datablocks::block_wrapper::BlockWrapper,
     generated::survival_wave_settings::SurvivalWaveSettings,
 };
 use gtde_error::error::Error;
@@ -47,13 +47,15 @@ fn get_templates(
 
     println!("Your options are: ");
     Template::print_options(templates);
-    println!("Please select one: ");
+    print!("Please select one: ");
     let mut buffer = String::new();
     let stdin = io::stdin();
     stdin.read_line(&mut buffer)?;
+    let text = buffer.trim();
+    println!("Read: <{}>", &text);
 
     for template in templates {
-        if template.name == buffer {
+        if template.name == text {
             println!("Selected {}", template.name.green());
 
             return Ok(Some(template.data.clone()));
@@ -89,9 +91,14 @@ impl Template {
 
             for (i, line) in lines.iter().enumerate() {
                 if i == 0 {
-                    println!("{:<width$}  {}", option.name, line, width = name_width);
+                    println!(
+                        "\"{:<width$}\"            {}",
+                        option.name,
+                        line,
+                        width = name_width
+                    );
                 } else {
-                    println!("{:<width$}  {}", "", line, width = name_width);
+                    println!("\"{:<width$}\"            {}", "", line, width = name_width);
                 }
             }
         }
@@ -103,7 +110,7 @@ pub fn create(path: impl AsRef<Path>, file_used: CreateFiles, reset: bool) -> Re
     let file_name: &'static str = file_used.into();
     let create_file_path = create_folder_path.join(file_name).with_extension("json");
 
-    if reset || std::fs::exists(create_file_path)? {
+    if reset || !std::fs::exists(create_file_path)? {
         let embed = include_bytes!("../../../resources/templates.json");
         let map = serde_json::from_slice(embed)?;
         let data = get_templates(&map, file_used)?.ok_or(Error::ConstructorNotChosen)?;
@@ -111,13 +118,15 @@ pub fn create(path: impl AsRef<Path>, file_used: CreateFiles, reset: bool) -> Re
         match file_used {
             CreateFiles::ChainedPuzzle => create_schema::<CreateChainedPuzzle>(&path, file_name)?,
             CreateFiles::SurvivalWaveSettings => {
-                create_schema::<BlockWrapper<SurvivalWaveSettings>>(&path, file_name)?
+                create_schema::<NamedContructorWrapper<SurvivalWaveSettings>>(&path, file_name)?
             }
-            CreateFiles::SurvivalWavePopulation => {
-                create_schema::<CreateSurvivalWavePopulation>(&path, file_name)?
-            }
+            CreateFiles::SurvivalWavePopulation => create_schema::<
+                NamedContructorWrapper<SurvivalWavePopulationIntermediary>,
+            >(&path, file_name)?,
             CreateFiles::Text => create_schema::<CreateText>(&path, file_name)?,
         };
+
+        return Ok(());
     }
 
     match file_used {
@@ -126,44 +135,23 @@ pub fn create(path: impl AsRef<Path>, file_used: CreateFiles, reset: bool) -> Re
                 .construct_all(&path)?
         }
         CreateFiles::SurvivalWaveSettings => {
-            load_constructor::<BlockWrapper<SurvivalWaveSettings>>(
+            load_constructor::<NamedContructorWrapper<SurvivalWaveSettings>>(
                 &path,
                 "survival-wave-settings",
             )?
             .construct(&path, "SurvivalWaveSettings")?;
         }
         CreateFiles::SurvivalWavePopulation => {
-            load_constructor::<CreateSurvivalWavePopulation>(&path, "survival-wave-population")?
-                .construct(&path, "SurvivalWavePopulation")?;
+            load_constructor::<NamedContructorWrapper<SurvivalWavePopulationIntermediary>>(
+                &path,
+                "survival-wave-population",
+            )?
+            .construct(&path, "SurvivalWavePopulation")?;
         }
         CreateFiles::Text => {
             load_constructor::<CreateText>(&path, "text")?.construct(&path, "Text")?;
         }
     };
-
-    // match file_used {
-    //     CreateFiles::ChainedPuzzle => {
-    //         load_constructor::<CreateChainedPuzzle>(&path, "chained_puzzle.json")?
-    //             .construct_all(&path)?;
-    //     }
-    //     CreateFiles::SurvivalWaveSettings => {
-    //         load_constructor::<BlockWrapper<SurvivalWaveSettings>>(
-    //             &path,
-    //             "survival_wave_settings.json",
-    //         )?
-    //         .construct(&path, "SurvivalWaveSettings")?;
-    //     }
-    //     CreateFiles::Text => {
-    //         load_constructor::<CreateText>(&path, "text.json")?.construct(&path, "Text")?;
-    //     }
-    //     CreateFiles::SurvivalWavePopulation => {
-    //         load_constructor::<CreateSurvivalWavePopulation>(
-    //             &path,
-    //             "survival_wave_population.json",
-    //         )?
-    //         .construct(&path, "SurvivalWavePopulation")?;
-    //     }
-    // };
 
     Ok(())
 }

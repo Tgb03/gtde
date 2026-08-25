@@ -5,10 +5,11 @@ use serde::{Serialize, de::DeserializeOwned};
 
 use crate::datablocks::{
     block_wrapper::BlockWrapper, datablock_wrapper::DatablockWrapper, reference::Reference,
+    satisfied::Satisfied,
 };
 
 pub trait TargettedConstructorWithoutName {
-    type Data: Serialize + DeserializeOwned + PartialEq;
+    type Data: Serialize + DeserializeOwned;
 
     fn construct(
         self,
@@ -18,8 +19,12 @@ pub trait TargettedConstructorWithoutName {
     ) -> Result<Reference<Self::Data>, Error>;
 }
 
-impl<T: Serialize + DeserializeOwned + PartialEq> TargettedConstructorWithoutName for T {
-    type Data = T;
+impl<P> TargettedConstructorWithoutName for P
+where
+    P: Satisfied + Into<P::Target>,
+    P::Target: Serialize + DeserializeOwned,
+{
+    type Data = P::Target;
 
     fn construct(
         self,
@@ -27,13 +32,9 @@ impl<T: Serialize + DeserializeOwned + PartialEq> TargettedConstructorWithoutNam
         name: String,
         datablock_name: &'static str,
     ) -> Result<Reference<Self::Data>, Error> {
-        let schema_name = format!("{}DataBlock.json", datablock_name);
-        let datablock_name = format!("GameData_{}DataBlock_bin.json", datablock_name);
-
-        let result = DatablockWrapper::<T>::add_block_to_files(
+        let result = DatablockWrapper::<P::Target>::add_block_to_files::<P>(
             env_path.as_ref().join("plugins"),
             &datablock_name,
-            &schema_name,
             &name,
             self,
         )?;
@@ -49,7 +50,7 @@ impl<T: Serialize + DeserializeOwned + PartialEq> TargettedConstructorWithoutNam
 }
 
 pub trait TargettedConstructor {
-    type Data: Serialize + DeserializeOwned + PartialEq;
+    type Data: Serialize + DeserializeOwned;
 
     fn construct(
         self,
@@ -66,14 +67,10 @@ impl<T: Serialize + DeserializeOwned + PartialEq> TargettedConstructor for Block
         env_path: impl AsRef<Path>,
         datablock_name: &'static str,
     ) -> Result<Reference<Self::Data>, Error> {
-        let schema_name = format!("{}DataBlock.json", datablock_name);
-        let datablock_name = format!("GameData_{}DataBlock_bin.json", datablock_name);
-
         let object_name = self.name.clone();
         let result = DatablockWrapper::<T>::add_block_to_files(
             env_path.as_ref().join("plugins"),
             &datablock_name,
-            &schema_name,
             &object_name,
             self.data,
         )?;

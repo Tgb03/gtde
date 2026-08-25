@@ -13,24 +13,19 @@
           "WantedDistanceFromStartPos": 0.0,
           "WantedDistanceBetweenPuzzleComponents": 10.0,
           "ChainedPuzzle": [
-            {
-              "PuzzleType": 6
-            },
-            {
-              "PuzzleType": 4
-            }
+            6, 4
           ],
           "OnlyShowHUDWhenPlayerIsClose": false,
           "AlarmSoundStart": 3339129407,
           "AlarmSoundStop": 42633153
         },
-        "survival_wave_population": [
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave"
-        ],
+        "survival_wave_population": {
+          "weakling": null,
+          "standard": "StrikerWave",
+          "special": "ShooterWave",
+          "mini_boss": "StrikerBigWave",
+          "boss": "ShooterBig"
+        },
         "survival_wave_settings": {
           "m_pauseBeforeStart": 3.0,
           "m_pauseBetweenGroups": 5.0,
@@ -83,7 +78,8 @@
         "m_populationPointsMinPerGroup": 5.0,
         "m_populationPointsPerGroupStart": 5.0,
         "m_populationPointsPerGroupEnd": 10.0,
-        "m_populationRampOverTime": 200.0
+        "m_populationRampOverTime": 200.0,
+        "name": "default"
       }
     }
   ],
@@ -115,17 +111,17 @@
   ],
   "SurvivalWavePopulation": [
     {
-      "name": "all_strikers",
-      "description": "only strikers, all of the items",
+      "name": "all-strikers",
+      "description": "ALL strikers, nothing else",
       "data": {
-        "name": "all_strikers",
-        "enemies": [
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave",
-          "StrikerWave"
-        ]
+        "name": "all-strikers",
+        "enemies": {
+          "weakling": "StrikerWave",
+          "standard": "StrikerWave",
+          "special": "StrikerWave",
+          "mini_boss": "StrikerWave",
+          "boss": "StrikerWave"
+        }
       }
     }
   ]

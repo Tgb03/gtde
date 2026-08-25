@@ -1,4 +1,3 @@
-
 const ENVIRONMENT: &str = "Environment";
 const PATH: &str = "Path";
 const DELIMITER: char = ';';

@@ -5,7 +5,10 @@ use crate::windows::add_to_path;
 #[cfg(target_os = "windows")]
 pub mod windows;
 
-const APP_BINARY: &[u8] = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/../target/release/gtde-cmd.exe"));
+const APP_BINARY: &[u8] = include_bytes!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../target/release/gtde-cmd.exe"
+));
 
 fn install_directory() -> PathBuf {
     env::var_os("LOCALAPPDATA")

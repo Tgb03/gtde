@@ -35,6 +35,12 @@ impl<T> Into<u32> for Reference<T> {
     }
 }
 
+impl<T> Reference<T> {
+    pub fn as_u32(self) -> u32 {
+        self.data
+    }
+}
+
 impl<T> From<u32> for Reference<T> {
     fn from(value: u32) -> Self {
         Self {

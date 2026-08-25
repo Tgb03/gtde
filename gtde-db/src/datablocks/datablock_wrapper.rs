@@ -1,4 +1,4 @@
-use crate::datablocks::{block_wrapper::BlockWrapper, reference::Reference};
+use crate::datablocks::{block_wrapper::BlockWrapper, reference::Reference, satisfied::Satisfied};
 use gtde_error::error::{Error, ErrorRanOutOfPersistentIDs};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Value;
@@ -64,14 +64,14 @@ impl<T> DatablockWrapper<T> {
     }
 }
 
-impl<T: PartialEq> DatablockWrapper<T> {
+impl<T> DatablockWrapper<T> {
     /// add some data to the datablock. If data is already present it does not get added.
     /// in both cases the id of where the data is stored is responded.
     ///
     /// the name variable gets cloned when the data is constructed.
-    pub fn check_add(
+    pub fn check_add<P: Satisfied<Target = T> + Into<T>>(
         &mut self,
-        data: T,
+        data: P,
         name: &str,
     ) -> Result<AddResult<T>, ErrorRanOutOfPersistentIDs> {
         if let Some(id) = self.check_exists(&data) {
@@ -79,12 +79,13 @@ impl<T: PartialEq> DatablockWrapper<T> {
         }
 
         if self.last_persistent_id == u32::MAX {
-            return self.check_add_super_slow(data, name);
+            let data_r: T = data.into();
+            return self.check_add_super_slow(data_r, name);
         }
 
         self.last_persistent_id += 1;
         self.blocks.push(BlockWrapper::new(
-            data,
+            data.into(),
             name.to_owned(),
             self.last_persistent_id,
         ));
@@ -92,10 +93,10 @@ impl<T: PartialEq> DatablockWrapper<T> {
         Ok(AddResult::new(self.last_persistent_id.into(), true))
     }
 
-    fn check_exists(&self, data: &T) -> Option<Reference<T>> {
+    fn check_exists<P: Satisfied<Target = T>>(&self, data: &P) -> Option<Reference<T>> {
         self.blocks
             .iter()
-            .find(|e| &e.data == data)
+            .find(|e| data.satisfied_by(&e.data))
             .map(|e| e.persistent_id.into())
     }
 
@@ -156,19 +157,24 @@ impl<T: Serialize + DeserializeOwned> DatablockWrapper<T> {
     }
 }
 
-impl<T: Serialize + DeserializeOwned + PartialEq> DatablockWrapper<T> {
-    pub fn add_block_to_files(
+impl<T: Serialize + DeserializeOwned> DatablockWrapper<T> {
+    pub fn add_block_to_files<P>(
         env_path: impl AsRef<Path>,
         datablock_name: &str,
-        schema_name: &str,
         data_name: &str,
-        data: T,
-    ) -> Result<Reference<T>, Error> {
-        let mut datablock = Self::load_datablock(&env_path, datablock_name)?;
+        data: P,
+    ) -> Result<Reference<T>, Error>
+    where
+        P: Satisfied<Target = T> + Into<T>,
+    {
+        let schema_name = format!("{}DataBlock.json", datablock_name);
+        let datablock_name = format!("GameData_{}DataBlock_bin.json", datablock_name);
+
+        let mut datablock = Self::load_datablock(&env_path, &datablock_name)?;
         let result = datablock.check_add(data, data_name)?;
 
         if result.was_added == true {
-            datablock.save_datablock(&env_path, schema_name, datablock_name)?;
+            datablock.save_datablock(&env_path, &schema_name, &datablock_name)?;
         }
 
         Ok(result.reference)

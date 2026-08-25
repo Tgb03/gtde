@@ -50,31 +50,6 @@ fn into_localized_text(text: Option<String>) -> LanguageData {
     }
 }
 
-impl Default for CreateText {
-    fn default() -> Self {
-        Self {
-            character_meta_data: CharacterMetaDataTextInner::Generic,
-            skip_localization: false,
-            import_version: 1,
-            export_version: 1,
-            description: "Default description".into(),
-            english: "".into(),
-            chinese_simplified: None,
-            chinese_traditional: None,
-            french: None,
-            german: None,
-            italian: None,
-            japanese: None,
-            korean: None,
-            polish: None,
-            portuguese_brazil: None,
-            russian: None,
-            spanish: None,
-            block_name: "default name".into(),
-        }
-    }
-}
-
 impl Into<Text> for CreateText {
     fn into(self) -> Text {
         Text {

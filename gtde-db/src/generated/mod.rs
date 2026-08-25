@@ -40,6 +40,15 @@ impl<T: Into<u32>> Into<u32> for EnumWrapper<T> {
     }
 }
 
+impl<T: Into<u32>> EnumWrapper<T> {
+    pub fn as_u32(self) -> u32 {
+        match self {
+            EnumWrapper::Data(data) => data.into(),
+            EnumWrapper::Int(val) => val,
+        }
+    }
+}
+
 impl<T: Into<u32>, D> Into<Reference<D>> for EnumWrapper<T> {
     fn into(self) -> Reference<D> {
         let id: u32 = self.into();
