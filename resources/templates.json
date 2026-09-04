@@ -2,7 +2,7 @@
   "ChainedPuzzle": [
     {
       "name": "simple",
-      "description": "default chained puzzle, everything is 0",
+      "description": "default chained puzzle, R1A1 first alarm",
       "data": {
         "chained_puzzle_data": {
           "PublicAlarmName": "Class II Alarm",
