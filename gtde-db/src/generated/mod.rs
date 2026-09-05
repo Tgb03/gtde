@@ -7,6 +7,7 @@ use crate::datablocks::reference::Reference;
 
 pub mod chained_puzzle;
 pub mod enemy;
+pub mod enemy_group;
 pub mod enums;
 pub mod survival_wave_population;
 pub mod survival_wave_settings;

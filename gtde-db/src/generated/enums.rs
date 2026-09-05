@@ -61,3 +61,88 @@ impl Into<u32> for EEnemyName {
         self as u32
     }
 }
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub enum EEnemyRoleDistribution {
+    #[serde(rename = "Force_One")]
+    ForceOne,
+    None,
+    #[serde(rename = "Rel_05")]
+    Rel05,
+    #[serde(rename = "Rel_10")]
+    Rel10,
+    #[serde(rename = "Rel_100")]
+    Rel100,
+    #[serde(rename = "Rel_15")]
+    Rel15,
+    #[serde(rename = "Rel_25")]
+    Rel25,
+    #[serde(rename = "Rel_50")]
+    Rel50,
+    #[serde(rename = "Rel_75")]
+    Rel75,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub enum EEnemyRole {
+    #[serde(rename = "BirtherChild")]
+    BirtherChild,
+    Boss,
+    Hunter,
+    Lurker,
+    Melee,
+    #[serde(rename = "MiniBoss")]
+    MiniBoss,
+    Patroller,
+    #[serde(rename = "PureSneak")]
+    PureSneak,
+    Ranged,
+    Scout,
+    Tank,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub enum EEnemyGroupType {
+    Awake,
+    Detect,
+    Hibernate,
+    Hunter,
+    Patrol,
+    #[serde(rename = "PureDetect")]
+    PureDetect,
+    #[serde(rename = "PureSneak")]
+    PureSneak,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub enum EEnemyRoleDifficulty {
+    Biss,
+    Boss,
+    Buss,
+    Easy,
+    Hard,
+    Medium,
+    #[serde(rename = "MegaBoss")]
+    MegaBoss,
+    #[serde(rename = "MiniBoss")]
+    MiniBoss,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, JsonSchema)]
+pub enum ESpawnPlacementType {
+    #[serde(rename = "Align_0")]
+    Align0,
+    #[serde(rename = "Align_1")]
+    Align1,
+    #[serde(rename = "Align_2")]
+    Align2,
+    #[serde(rename = "Align_3")]
+    Align3,
+    #[serde(rename = "Align_4")]
+    Align4,
+    #[serde(rename = "Align_5")]
+    Align5,
+    #[serde(rename = "CycleAllAligns")]
+    CycleAllAligns,
+    Default,
+}
