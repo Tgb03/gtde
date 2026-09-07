@@ -1,6 +1,7 @@
 use core::fmt;
 use std::marker::PhantomData;
 
+use schemars::JsonSchema;
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Visitor};
 
 #[derive(PartialEq, Eq, Debug)]
@@ -107,5 +108,15 @@ impl<'de, T> Deserialize<'de> for Reference<T> {
         }
 
         deserializer.deserialize_u32(ReferenceVisitor(PhantomData))
+    }
+}
+
+impl<T> JsonSchema for Reference<T> {
+    fn schema_name() -> std::borrow::Cow<'static, str> {
+        "Reference".into()
+    }
+
+    fn json_schema(generator: &mut schemars::SchemaGenerator) -> schemars::Schema {
+        u32::json_schema(generator)
     }
 }
