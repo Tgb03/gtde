@@ -6,7 +6,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Visitor};
 
 #[derive(PartialEq, Eq, Debug)]
 pub struct Reference<T> {
-    data: u32,
+    data: i64,
     phantom: PhantomData<T>,
 }
 
@@ -30,22 +30,31 @@ impl<T> Clone for Reference<T> {
 
 impl<T> Copy for Reference<T> {}
 
-impl<T> Into<u32> for Reference<T> {
-    fn into(self) -> u32 {
+impl<T> Into<i64> for Reference<T> {
+    fn into(self) -> i64 {
         self.data
     }
 }
 
 impl<T> Reference<T> {
-    pub fn as_u32(self) -> u32 {
+    pub fn as_i64(self) -> i64 {
         self.data
+    }
+}
+
+impl<T> From<i64> for Reference<T> {
+    fn from(value: i64) -> Self {
+        Self {
+            data: value,
+            phantom: PhantomData,
+        }
     }
 }
 
 impl<T> From<u32> for Reference<T> {
     fn from(value: u32) -> Self {
         Self {
-            data: value,
+            data: value as i64,
             phantom: PhantomData,
         }
     }
@@ -56,7 +65,7 @@ impl<T> Serialize for Reference<T> {
     where
         S: Serializer,
     {
-        serializer.serialize_u32(self.data)
+        serializer.serialize_i64(self.data)
     }
 }
 
@@ -71,10 +80,10 @@ impl<'de, T> Deserialize<'de> for Reference<T> {
             type Value = Reference<T>;
 
             fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("a u32 representing a Reference")
+                formatter.write_str("a i64 representing a Reference")
             }
 
-            fn visit_u32<E>(self, value: u32) -> Result<Self::Value, E>
+            fn visit_i64<E>(self, value: i64) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
             {
@@ -83,31 +92,9 @@ impl<'de, T> Deserialize<'de> for Reference<T> {
                     phantom: PhantomData,
                 })
             }
-
-            // Handle other integer types serde might hand us
-            // (e.g. from formats like JSON where numbers may come as u64/i64)
-            fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
-            where
-                E: serde::de::Error,
-            {
-                use std::convert::TryFrom;
-                let value = u32::try_from(value)
-                    .map_err(|_| E::custom(format!("u32 out of range: {}", value)))?;
-                self.visit_u32(value)
-            }
-
-            fn visit_i64<E>(self, value: i64) -> Result<Self::Value, E>
-            where
-                E: serde::de::Error,
-            {
-                use std::convert::TryFrom;
-                let value = u32::try_from(value)
-                    .map_err(|_| E::custom(format!("u32 out of range: {}", value)))?;
-                self.visit_u32(value)
-            }
         }
 
-        deserializer.deserialize_u32(ReferenceVisitor(PhantomData))
+        deserializer.deserialize_i64(ReferenceVisitor(PhantomData))
     }
 }
 
@@ -117,6 +104,6 @@ impl<T> JsonSchema for Reference<T> {
     }
 
     fn json_schema(generator: &mut schemars::SchemaGenerator) -> schemars::Schema {
-        u32::json_schema(generator)
+        i64::json_schema(generator)
     }
 }

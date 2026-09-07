@@ -42,7 +42,7 @@ where
         println!(
             "Added {} with id {} to {}",
             name,
-            Into::<u32>::into(result),
+            Into::<i64>::into(result),
             datablock_name
         );
         Ok(result)
@@ -78,7 +78,7 @@ impl<T: Serialize + DeserializeOwned + PartialEq> TargettedConstructor for Block
         println!(
             "Added {} with id {} to {}",
             object_name,
-            Into::<u32>::into(result),
+            Into::<i64>::into(result),
             datablock_name
         );
         Ok(result)

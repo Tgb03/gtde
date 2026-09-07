@@ -21,34 +21,46 @@ impl Satisfied for SurvivalWavePopulationIntermediary {
     fn satisfied_by(&self, data: &SurvivalWavePopulation) -> bool {
         self.weakling
             .clone()
-            .is_none_or(|e| e.as_u32() == data.wave_role_weakling.as_u32())
+            .is_none_or(|e| e.as_u32() as i64 == data.wave_role_weakling.as_i64())
             && self
                 .standard
                 .clone()
-                .is_none_or(|e| e.as_u32() == data.wave_role_standard.as_u32())
+                .is_none_or(|e| e.as_u32() as i64 == data.wave_role_standard.as_i64())
             && self
                 .special
                 .clone()
-                .is_none_or(|e| e.as_u32() == data.wave_role_special.as_u32())
+                .is_none_or(|e| e.as_u32() as i64 == data.wave_role_special.as_i64())
             && self
                 .mini_boss
                 .clone()
-                .is_none_or(|e| e.as_u32() == data.wave_role_mini_boss.as_u32())
+                .is_none_or(|e| e.as_u32() as i64 == data.wave_role_mini_boss.as_i64())
             && self
                 .boss
                 .clone()
-                .is_none_or(|e| e.as_u32() == data.wave_role_boss.as_u32())
+                .is_none_or(|e| e.as_u32() as i64 == data.wave_role_boss.as_i64())
     }
 }
 
 impl Into<SurvivalWavePopulation> for SurvivalWavePopulationIntermediary {
     fn into(self) -> SurvivalWavePopulation {
         SurvivalWavePopulation {
-            wave_role_boss: self.boss.unwrap_or_default().as_u32().into(),
-            wave_role_mini_boss: self.mini_boss.unwrap_or_default().as_u32().into(),
-            wave_role_special: self.special.unwrap_or_default().as_u32().into(),
-            wave_role_standard: self.standard.unwrap_or_default().as_u32().into(),
-            wave_role_weakling: self.weakling.unwrap_or_default().as_u32().into(),
+            wave_role_boss: self.boss.map(|e| e.as_u32() as i64).unwrap_or(-1).into(),
+            wave_role_mini_boss: self
+                .mini_boss
+                .map(|e| e.as_u32() as i64)
+                .unwrap_or(-1)
+                .into(),
+            wave_role_special: self.special.map(|e| e.as_u32() as i64).unwrap_or(-1).into(),
+            wave_role_standard: self
+                .standard
+                .map(|e| e.as_u32() as i64)
+                .unwrap_or(-1)
+                .into(),
+            wave_role_weakling: self
+                .weakling
+                .map(|e| e.as_u32() as i64)
+                .unwrap_or(-1)
+                .into(),
         }
     }
 }
