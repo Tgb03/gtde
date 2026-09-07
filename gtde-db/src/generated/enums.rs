@@ -14,8 +14,9 @@ pub enum EEnemyType {
 #[repr(u32)]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, JsonSchema)]
 pub enum EEnemyName {
-    ShooterWave = 11,
     #[default]
+    None,
+    ShooterWave = 11,
     StrikerWave = 13,
     StrikerBigWave = 16,
     ShooterBig = 18,
