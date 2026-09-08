@@ -1,7 +1,7 @@
 
 # **Use GIT with this project in case something goes wrong**
 
-# GTDE: GTFO Datablock Editor
+# GTDE: GTFO Project Manager
 
 This project aims to make working with GTFO datablock projects easier. It mainly is a 
 command line application that allows you to do various things ranging from creating projects
