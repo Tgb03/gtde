@@ -21,7 +21,7 @@ environment variable `PATH` to link to the folder with the "gtde.exe" file. You 
 
 ### _Linux way_ (I'm sorry)
 
-You have to download and compile the entire project. You need rust, cargo and a potentially a bunch of other stuff.
+You have to download "gtde" and put it in the `/usr/local/bin` folder.
 
 # How to use:
 
