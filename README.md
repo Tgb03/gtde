@@ -50,5 +50,5 @@ This is a quality of life. If you type `gtde grab-db <DATABLOCK>` it will copy a
 
 Now that you have working project, here's the most powerful feature `create`, beware this feature is still somewhat limited right now but I will develop it over time.
 
-`gtde create -h` allows you to do specific stuff like adding entries to specific datablocks or even multiple datablocks. How it works: When you run it for the first time it will create some files in the `create` folder. You will then edit these files and then, when you run `gtde create <FILE_USED>`, gtde will read said file and try to add that entry to your project. It will then tell you which `persistentID` it got and can be later used by you. 
+`gtde create -h` allows you to do specific stuff like adding entries to specific datablocks or even multiple datablocks. How it works: When you run it for the first time it will create some files in the `gtde-create` folder. You will then edit these files and then, when you run `gtde create <FILE_USED>`, gtde will read said file and try to add that entry to your project. It will then tell you which `persistentID` it got and can be later used by you. 
 
