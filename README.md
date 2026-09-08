@@ -44,7 +44,7 @@ to a specific modding profile. This will be used to export your project there so
 
 Now you can build the project using `gtde build` which will take the current files and export them into the profile at `profile_path`. MTFO will load them or even automatically reload the files if the game is open and MTFO config is set to auto reload. 
 
-If you have a build that is ready to be published simply run `gtde build -r` which will create inside the `output` folder 2 files: the unzipped project and the zipped project. The .zip file is already ready to be published to thunderstore. If at any point anything goes wrong, make sure to read the output of `gtde`, it will tell you what happened, mostly. If not, please let me know.
+If you have a build that is ready to be published simply run `gtde build -r` which will create inside the `output` folder 2 files: the unzipped project and the zipped project. The .zip file is already ready to be published to thunderstore. If at any point anything goes wrong, make sure to read the output of `gtde`, it will tell you what happened, mostly. If not, please let me know. Do also make sure that your project has the icon.png file, manifest.json setup properly and the README.md and CHANGELOG.md setup properly.
 
 ### <ins>Grab Datablock</ins>
 
