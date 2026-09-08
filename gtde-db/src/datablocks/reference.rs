@@ -1,8 +1,7 @@
-use core::fmt;
 use std::marker::PhantomData;
 
 use schemars::JsonSchema;
-use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Visitor};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(PartialEq, Eq, Debug)]
 pub struct Reference<T> {
@@ -74,27 +73,8 @@ impl<'de, T> Deserialize<'de> for Reference<T> {
     where
         D: Deserializer<'de>,
     {
-        struct ReferenceVisitor<T>(PhantomData<T>);
-
-        impl<'de, T> Visitor<'de> for ReferenceVisitor<T> {
-            type Value = Reference<T>;
-
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                formatter.write_str("a i64 representing a Reference")
-            }
-
-            fn visit_i64<E>(self, value: i64) -> Result<Self::Value, E>
-            where
-                E: serde::de::Error,
-            {
-                Ok(Reference {
-                    data: value,
-                    phantom: PhantomData,
-                })
-            }
-        }
-
-        deserializer.deserialize_i64(ReferenceVisitor(PhantomData))
+        let data = i64::deserialize(deserializer)?;
+        Ok(Self::from(data))
     }
 }
 
