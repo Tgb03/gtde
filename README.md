@@ -19,6 +19,10 @@ in the default folder.
 Go to **Releases** and download "gtde.exe". Place this file wherever you want and then modify the
 environment variable `PATH` to link to the folder with the "gtde.exe" file. You can also drop this directly in the folder of the project where you are using it but you will not be able to use it anywhere else without duplicating the executable.
 
+### _Linux way_ (I'm sorry)
+
+You have to download and compile the entire project. You need rust, cargo and a potentially a bunch of other stuff.
+
 # How to use:
 
 Opening a cmd or powershell allows you to use the `gtde` command. If you type `gtde -h` it will list all
