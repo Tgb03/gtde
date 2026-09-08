@@ -9,6 +9,9 @@ members = [
 ]
 resolver = "1"
 
+[workspace.package]
+version = "3.2.14"
+
 [workspace.dependencies]
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = { version = "1.0.150", features = ["preserve_order"] }

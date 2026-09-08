@@ -383,7 +383,7 @@ dependencies = [
 
 [[package]]
 name = "gtde-cmd"
-version = "0.1.0"
+version = "3.2.14"
 dependencies = [
  "clap",
  "colored",
@@ -400,7 +400,7 @@ dependencies = [
 
 [[package]]
 name = "gtde-db"
-version = "0.1.0"
+version = "3.2.14"
 dependencies = [
  "colored",
  "gtde-error",
@@ -413,7 +413,7 @@ dependencies = [
 
 [[package]]
 name = "gtde-error"
-version = "0.1.0"
+version = "3.2.14"
 dependencies = [
  "serde_json",
  "thiserror",
@@ -421,7 +421,7 @@ dependencies = [
 
 [[package]]
 name = "gtde-file"
-version = "0.1.0"
+version = "3.2.14"
 dependencies = [
  "gtde-error",
  "serde",
@@ -432,7 +432,7 @@ dependencies = [
 
 [[package]]
 name = "gtde-installer"
-version = "0.1.0"
+version = "3.2.14"
 dependencies = [
  "directories",
  "gtde-cmd",
