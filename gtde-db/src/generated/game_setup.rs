@@ -4,7 +4,7 @@ use crate::{datablocks::reference::Reference, generated::rundown::Rundown};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct GameSetupDataBlock {
+pub struct GameSetup {
     #[serde(rename = "RundownIdsToLoad")]
     pub rundown_ids_to_load: Vec<Reference<Rundown>>,
     pub startup_screen_to_load: StartupScreenToLoad,
