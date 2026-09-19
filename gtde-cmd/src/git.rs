@@ -1,5 +1,4 @@
 /// File AI generated with ChatGPT
-
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -13,9 +12,7 @@ where
     I: IntoIterator<Item = S>,
     S: AsRef<str>,
 {
-    let path = env_path.as_ref()
-        .join(".gitignore")
-        .with_extension("");
+    let path = env_path.as_ref().join(".gitignore").with_extension("");
 
     // Load the existing .gitignore, or treat a missing file as empty.
     let mut contents = match fs::read_to_string(&path) {

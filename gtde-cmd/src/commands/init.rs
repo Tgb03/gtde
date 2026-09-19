@@ -110,13 +110,8 @@ impl Display for DatablockEnum {
 }
 
 pub fn init<'a>(path: &'a Path) -> Result<(), Error> {
-    update_gitignore(path, &[
-        ".schemas",
-        "gtde-create",
-        "output",
-        "gtde.config"
-    ])?;
-    
+    update_gitignore(path, &[".schemas", "gtde-create", "output", "gtde.config"])?;
+
     fs::create_dir_all(path.join("Assets")).map_err(Error::io_at(path.join("Assets")))?;
     fs::create_dir_all(path.join("config")).map_err(Error::io_at(path.join("config")))?;
     fs::create_dir_all(path.join("plugins")).map_err(Error::io_at(path.join("plugins")))?;

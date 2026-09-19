@@ -1,5 +1,5 @@
 pub mod args;
 pub mod commands;
 pub mod config;
-pub mod manifest;
 pub mod git;
+pub mod manifest;

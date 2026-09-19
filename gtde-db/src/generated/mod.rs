@@ -10,9 +10,16 @@ pub mod enemy;
 pub mod enemy_group;
 pub mod enemy_population;
 pub mod enums;
+pub mod game_setup;
+pub mod rundown;
 pub mod survival_wave_population;
 pub mod survival_wave_settings;
 pub mod text;
+pub mod warden_objective_event;
+pub mod vector;
+
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, JsonSchema)]
+pub struct UndefinedReferenceItem;
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, JsonSchema)]
 #[serde(untagged)]

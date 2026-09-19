@@ -1,8 +1,8 @@
 pub mod args;
 pub mod commands;
 pub mod config;
-pub mod manifest;
 pub mod git;
+pub mod manifest;
 
 use args::Cli;
 use clap::Parser;

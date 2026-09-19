@@ -1,6 +1,9 @@
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, PartialEq, Serialize, Default, Deserialize)]
+use crate::datablocks::reference::Reference;
+
+#[derive(Clone, PartialEq, Serialize, Default, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 pub struct Text {
     pub character_meta_data: i64,
@@ -25,9 +28,22 @@ pub struct Text {
     pub spanish: LanguageData,
 }
 
-#[derive(Clone, PartialEq, Serialize, Default, Deserialize)]
+#[derive(Clone, PartialEq, Serialize, Default, Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 pub struct LanguageData {
     pub should_translate: bool,
     pub translation: String,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema, Debug)]
+#[serde(untagged)]
+pub enum LocalizedText {
+    Integer(Reference<Text>),
+    String(String),
+}
+
+impl Default for LocalizedText {
+    fn default() -> Self {
+        Self::String(String::new())
+    }
 }
