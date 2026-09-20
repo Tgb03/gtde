@@ -338,8 +338,6 @@ pub enum LocalZoneIndex {
     Zone1,
     #[serde(rename = "Zone_2")]
     Zone2,
-    #[serde(rename = "Zone_20")]
-    Zone20,
     #[serde(rename = "Zone_3")]
     Zone3,
     #[serde(rename = "Zone_4")]
@@ -374,6 +372,8 @@ pub enum LocalZoneIndex {
     Zone18,
     #[serde(rename = "Zone_19")]
     Zone19,
+    #[serde(rename = "Zone_20")]
+    Zone20,
 }
 
 #[derive(Serialize, Deserialize)]
