@@ -28,7 +28,8 @@ fn resolve_datablock_bytes<'a>(
 pub fn search_db(
     env_path: impl AsRef<Path>,
     datablock: DatablockEnum,
-    id: u32,
+    id: Option<u32>,
+    name: Option<String>,
     custom_field: Option<String>,
 ) -> Result<(), Error> {
     let mut number_of_found_objects = 0usize;
@@ -38,10 +39,13 @@ pub fn search_db(
         serde_json::from_slice(&data)?;
 
     for value in json_value.as_ref() {
-        if value.persistent_id == id {
+        if id.is_none_or(|id| id == value.persistent_id) || 
+            name.as_ref().is_none_or(|name| name == &value.name) {
+                
             if let Some(custom) = custom_field.as_ref() {
                 println!(
-                    "{}",
+                    "{}: {}\n",
+                    value.persistent_id,
                     serde_json::to_string_pretty(&value.data.get(custom))?.green()
                 );
                 number_of_found_objects += 1;
@@ -49,7 +53,7 @@ pub fn search_db(
                 continue;
             }
 
-            println!("{}", serde_json::to_string_pretty(&value.data)?.green());
+            println!("{}: {}", value.persistent_id, serde_json::to_string_pretty(&value.data)?.green());
             number_of_found_objects += 1;
         }
     }

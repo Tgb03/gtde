@@ -3,8 +3,7 @@ use gtde_error::error::{Error, ErrorRanOutOfPersistentIDs};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Value;
 use std::{
-    ops::{Deref, DerefMut},
-    path::Path,
+    ops::{Deref, DerefMut}, path::Path, vec::IntoIter,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -28,6 +27,27 @@ pub struct DatablockWrapper<T> {
     blocks: Vec<BlockWrapper<T>>,
     #[serde(rename = "LastPersistentID")]
     last_persistent_id: u32,
+}
+
+impl<T> IntoIterator for DatablockWrapper<T> {
+    type Item = BlockWrapper<T>;
+    type IntoIter = IntoIter<BlockWrapper<T>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.blocks.into_iter()
+    }
+}
+
+impl<T> FromIterator<BlockWrapper<T>> for DatablockWrapper<T> {
+    fn from_iter<I: IntoIterator<Item = BlockWrapper<T>>>(iter: I) -> Self {
+        let mut db = DatablockWrapper::default();
+
+        for entry in iter {
+            db.insert(entry.data, entry.name, entry.persistent_id);
+        }
+
+        db
+    }
 }
 
 impl<T> Deref for DatablockWrapper<T> {
@@ -91,6 +111,17 @@ impl<T> DatablockWrapper<T> {
         ));
 
         Ok(AddResult::new(self.last_persistent_id.into(), true))
+    }
+
+    pub fn insert(&mut self, data: T, name: String, id: u32) -> Option<AddResult<T>> {
+        if self.iter().any(|d| d.persistent_id == id) {
+            return None;
+        }
+
+        self.blocks.push(BlockWrapper::new(data, name, id));
+        self.ensure_correct();
+
+        Some(AddResult { was_added: true, reference: id.into() })
     }
 
     fn check_exists<P: Satisfied<Target = T>>(&self, data: &P) -> Option<Reference<T>> {

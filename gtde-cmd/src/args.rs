@@ -43,6 +43,11 @@ enum Command {
     New {
         /// Name of the project to create
         project_name: String,
+        /// If true this makes the project have just the most basic
+        /// setup possible, aka the tutorial and just one level R1A1
+        /// in the rundown with ID 1 so that you can mod it nicely.
+        #[arg(short = 'm', long = "minimum-viable")]
+        minimum_viable: bool,
     },
     /// Initialize gtde in the current directory
     Init,
@@ -80,7 +85,11 @@ enum Command {
         /// The datablock is just the tiny name, ignoring the prefix and suffix.
         db: DatablockEnum,
         /// The persistentID to search for
-        id: u32,
+        #[arg(short = 'i', long = "persistent-id")]
+        id: Option<u32>,
+        /// The name to search for
+        #[arg(short = 'n', long = "name")]
+        name: Option<String>,
         /// Only show a custom field in each found entry
         #[arg(short = 'f', long = "custom-field")]
         custom_field: Option<String>,
@@ -100,8 +109,8 @@ impl Command {
 
                 build::build(version, &env_path)
             }
-            Command::New { project_name } => {
-                new::new(project_name, &env_path).map_err(|e| e.into())
+            Command::New { project_name, minimum_viable } => {
+                new::new(project_name, &env_path, minimum_viable).map_err(|e| e.into())
             }
             Command::Init => init::init(&env_path).map_err(|e| e.into()),
             Command::AddDependency { path } => add_dependency::add_dependency(&env_path, path),
@@ -114,8 +123,9 @@ impl Command {
             Command::SearchDB {
                 db,
                 id,
+                name,
                 custom_field,
-            } => search_db(&env_path, db, id, custom_field),
+            } => search_db(&env_path, db, id, name, custom_field),
         }
     }
 }
