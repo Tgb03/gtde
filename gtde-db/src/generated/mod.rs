@@ -16,6 +16,7 @@ pub mod survival_wave_population;
 pub mod survival_wave_settings;
 pub mod text;
 pub mod warden_objective_event;
+// pub mod level_layout;
 pub mod vector;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, JsonSchema)]
