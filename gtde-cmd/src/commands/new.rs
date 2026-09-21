@@ -60,6 +60,8 @@ fn init_rundown(path: impl AsRef<Path>) -> Result<(), Error> {
                 bw.data.as_object_mut().unwrap()
                     .get_mut("TierD").unwrap()
                     .as_array_mut().unwrap().clear();
+
+                bw.persistent_id = 1;
             }
 
             bw
